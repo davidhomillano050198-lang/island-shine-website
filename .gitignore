@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.DS_Store
+*.log
+.env
+.env.*
+
+# Private: client notes, job search files, local tooling
+PLAN.md
+job-applications.md
+proof/
+.claude/
+assets/source-images/

@@ -1,0 +1,106 @@
+---
+import Page from "../components/Page.astro";
+import PageHero from "../components/PageHero.astro";
+import QuoteForm from "../components/QuoteForm.astro";
+import { Icon } from "astro-icon/components";
+import { img } from "../lib/img";
+import { site, waLink } from "../data/site";
+
+const heroImg = img("ph-how");
+const wa = waLink(site.whatsapp.number, site.whatsapp.prefill);
+const mapQuery = encodeURIComponent(site.address.lines.join(", "));
+---
+
+<Page
+  title={`Contact | ${site.shortName}`}
+  description="Get a fast, no-obligation quote from Island Shine Cleaning Services & Renovation. Call, WhatsApp or email us — serving Penang, Butterworth & Kulim."
+>
+  <PageHero
+    eyebrow="Contact us"
+    title="Let's talk about your space"
+    subtitle="Tell us about your project and get a fast, no-obligation quote. We respond quickly and serve clients across Penang, Butterworth & Kulim."
+    image={heroImg}
+    crumb="Contact"
+  />
+
+  <section class="relative overflow-hidden bg-paper py-16 lg:py-24">
+    <div class="svc-bg" aria-hidden="true">
+      <span class="blob blob-blue"></span>
+      <span class="blob blob-yellow-2"></span>
+    </div>
+    <div class="relative z-10 mx-auto grid max-w-7xl gap-10 px-6 sm:px-8 lg:grid-cols-5 lg:gap-12">
+      <!-- details -->
+      <div class="reveal lg:col-span-2">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-ink">Get in touch</h2>
+        <p class="mt-3 leading-relaxed text-ink-600">Reach us directly — we're happy to advise on the right service and a fair price.</p>
+
+        <div class="mt-8 space-y-4">
+          <div class="glass-strong rounded-2xl p-5 ring-1 ring-line">
+            <p class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink-600">
+              <Icon name="tabler:brand-whatsapp" class="h-5 w-5 text-[#25D366]" /> WhatsApp us
+            </p>
+            <ul class="mt-3 space-y-2">
+              {site.phones.map((p) => (
+                <li>
+                  <a href={waLink(p.tel.replace("+", ""), site.whatsapp.prefill)} target="_blank" rel="noopener" class="font-semibold text-ink hover:text-brand-blue-600">{p.display}</a>
+                  <span class="ml-2 text-sm text-ink-600">{p.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <a href={`mailto:${site.email}`} class="block glass-strong rounded-2xl p-5 ring-1 ring-line transition-colors hover:ring-brand-blue/40">
+            <p class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink-600">
+              <Icon name="tabler:mail" class="h-5 w-5 text-brand-blue" /> Email
+            </p>
+            <p class="mt-2 font-semibold text-ink">{site.email}</p>
+          </a>
+
+          <div class="glass-strong rounded-2xl p-5 ring-1 ring-line">
+            <p class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink-600">
+              <Icon name="tabler:map-pin" class="h-5 w-5 text-brand-blue" /> Visit us
+            </p>
+            <address class="mt-2 not-italic leading-relaxed text-ink">
+              {site.address.lines.map((l) => <span class="block">{l}</span>)}
+            </address>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <a href={wa} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-2xl bg-[#25D366] px-5 py-3 font-semibold text-[#063D1B] transition-transform hover:-translate-y-0.5">
+              <Icon name="tabler:brand-whatsapp" class="h-5 w-5" /> WhatsApp
+            </a>
+            <a href={site.facebook} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-2xl border border-line bg-white px-5 py-3 font-semibold text-ink transition-colors hover:border-brand-blue/40">
+              <Icon name="tabler:brand-facebook" class="h-5 w-5 text-brand-blue" /> Facebook
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- form -->
+      <div class="reveal lg:col-span-3">
+        <div class="tech-card glass-strong rounded-3xl p-7 shadow-xl sm:p-9">
+          <h2 class="font-display text-2xl font-extrabold tracking-tight text-ink">Request a free quote</h2>
+          <p class="mt-2 text-ink-600">Fill in a few details and we'll get back to you fast.</p>
+          <div class="mt-6">
+            <QuoteForm />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="relative bg-sand pb-16 lg:pb-24">
+    <div class="mx-auto max-w-7xl px-6 sm:px-8">
+      <div class="overflow-hidden rounded-3xl shadow-sm ring-1 ring-line">
+        <iframe
+          title="Island Shine location"
+          src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
+          class="h-80 w-full border-0 lg:h-96"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+</Page>

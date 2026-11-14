@@ -1,0 +1,19 @@
+---
+// Floating action buttons: WhatsApp (primary, pulsing) + Facebook. Each is a sleek
+// circular button that expands to reveal its label on hover/focus.
+import { Icon } from "astro-icon/components";
+import { site, waLink } from "../data/site";
+const wa = waLink(site.whatsapp.number, site.whatsapp.prefill);
+---
+
+<div class="fab-stack">
+  <a href={site.messenger} target="_blank" rel="noopener" class="fab fab-msg" aria-label="Visit Island Shine on Facebook">
+    <span class="fab-label">Facebook</span>
+    <span class="fab-icon"><Icon name="tabler:brand-facebook" class="h-7 w-7" /></span>
+  </a>
+  <a href={wa} target="_blank" rel="noopener" class="fab fab-wa" aria-label="Chat with us on WhatsApp">
+    <span class="fab-ping" aria-hidden="true"></span>
+    <span class="fab-label">Chat on WhatsApp</span>
+    <span class="fab-icon"><Icon name="tabler:brand-whatsapp" class="h-7 w-7" /></span>
+  </a>
+</div>

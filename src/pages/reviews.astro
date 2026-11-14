@@ -1,0 +1,80 @@
+---
+import Page from "../components/Page.astro";
+import PageHero from "../components/PageHero.astro";
+import CTABand from "../components/CTABand.astro";
+import { Icon } from "astro-icon/components";
+import { img } from "../lib/img";
+import { site } from "../data/site";
+import { testimonials } from "../data/testimonials";
+
+const heroImg = img("ph-reviews");
+const stats = [
+  { num: "5.0", label: "Average rating" },
+  { num: "3000+", label: "Projects completed" },
+  { num: "100%", label: "Would recommend" },
+];
+---
+
+<Page
+  title={`Customer Reviews | ${site.shortName}`}
+  description="Real reviews from Island Shine customers across Penang, Butterworth & Kulim — professional, on-time, spotless results with friendly follow-up."
+>
+  <PageHero
+    eyebrow="Customer reviews"
+    title="Customer satisfaction is our utmost priority"
+    subtitle="Don't just take our word for it — here's what homeowners, offices and developers say after working with Island Shine."
+    image={heroImg}
+    crumb="Reviews"
+  >
+    <div class="reveal mt-9 flex flex-wrap items-center gap-x-10 gap-y-5">
+      {stats.map((s) => (
+        <div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-display text-4xl font-extrabold text-ink">{s.num}</span>
+            {s.num === "5.0" && (
+              <span class="flex">
+                {[0, 1, 2, 3, 4].map(() => <Icon name="tabler:star-filled" class="h-5 w-5 text-brand-yellow" />)}
+              </span>
+            )}
+          </div>
+          <p class="mt-1 text-sm text-ink-600">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  </PageHero>
+
+  <section class="relative overflow-hidden bg-paper py-16 lg:py-24">
+    <div class="svc-grid absolute inset-0" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+      <div class="gap-6 columns-1 md:columns-2 lg:columns-3">
+        {testimonials.map((t) => (
+          <figure class="reveal mb-6 block break-inside-avoid rounded-3xl bg-white p-7 shadow-sm ring-1 ring-line transition-shadow hover:shadow-lg">
+            <div class="flex items-center justify-between">
+              <span class="flex">
+                {[0, 1, 2, 3, 4].map(() => <Icon name="tabler:star-filled" class="h-4 w-4 text-brand-yellow" />)}
+              </span>
+              <Icon name="tabler:quote" class="h-7 w-7 text-brand-blue/15" />
+            </div>
+            <blockquote class="mt-4 leading-relaxed text-ink">“{t.quote}”</blockquote>
+            <figcaption class="mt-5 flex items-center gap-3 border-t border-line pt-4">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-[#0aa2c4] font-display text-sm font-bold text-white">
+                {t.name.charAt(0)}
+              </span>
+              <span>
+                <span class="block font-semibold text-ink">{t.name}</span>
+                {t.role && <span class="block text-xs text-ink-600">{t.role}</span>}
+              </span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <p class="reveal mt-10 text-center text-sm text-ink-600">
+        Reviews sourced from the Island Shine customer profile and Google.
+        <a href={site.facebook} target="_blank" rel="noopener" class="font-semibold text-brand-blue-600 hover:underline">See more on Facebook</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTABand title="Join 3000+ happy customers" />
+</Page>

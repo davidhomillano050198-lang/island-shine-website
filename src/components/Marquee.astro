@@ -1,0 +1,41 @@
+---
+import { Icon } from "astro-icon/components";
+const items = [
+  "Building painting",
+  "Renovation",
+  "Post-renovation cleaning",
+  "High-rise cleaning",
+  "Factory & industrial",
+  "Carpet care",
+  "Landscaping",
+  "Contract cleaning",
+];
+const loop = [...items, ...items];
+---
+
+<div class="overflow-hidden border-y border-white/10 bg-brand-blue-600 py-4">
+  <div class="marquee flex w-max items-center gap-10">
+    {loop.map((i) => (
+      <span class="flex items-center gap-10 whitespace-nowrap font-display text-lg font-semibold text-white/90">
+        {i}
+        <Icon name="tabler:sparkles" class="h-5 w-5 text-brand-yellow" />
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee {
+      animation: marquee 32s linear infinite;
+    }
+    .marquee:hover {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

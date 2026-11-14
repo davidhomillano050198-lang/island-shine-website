@@ -1,0 +1,125 @@
+---
+import Page from "../components/Page.astro";
+import PageHero from "../components/PageHero.astro";
+import CTABand from "../components/CTABand.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { img } from "../lib/img";
+import { site } from "../data/site";
+
+const heroImg = img("ph-how");
+const teamImg = img("team");
+
+const pillars = [
+  {
+    icon: "tabler:target-arrow",
+    title: "Mission & Vision",
+    text: "To earn the lifetime loyalty of our customers by consistently giving high-quality services — transforming vision into productive reality through our promise of quality work and reasonable pricing.",
+  },
+  {
+    icon: "tabler:users-group",
+    title: "Our Team",
+    text: "A team of dedicated full-time and part-time workers with years of experience in the field. They work with great enthusiasm and the competence to meet every expectation.",
+  },
+  {
+    icon: "tabler:heart-handshake",
+    title: "Our Value",
+    text: "We serve our clients as partners and work side by side to deliver maximum benefit. Our work doesn't stop at hand-over — we stay on for as long as you want us to.",
+  },
+];
+
+const steps = [
+  { n: "01", icon: "tabler:calendar-check", title: "Book your project", text: "Tell us what you need and get a fast, no-obligation quote — any time, anywhere in Penang, Butterworth & Kulim." },
+  { n: "02", icon: "tabler:tools", title: "We paint, renovate & clean", text: "Our CIDB-certified painters, renovators and professional cleaning crew transform your space, on time and on budget, with minimal disruption." },
+  { n: "03", icon: "tabler:sparkles", title: "Enjoy the shine", text: "We hand it back spotless with machine-powered, SDS-certified post-renovation cleaning." },
+];
+---
+
+<Page
+  title={`How We Work | ${site.shortName}`}
+  description="Our mission, team and values — and the simple three-step journey from your first call to a spotless, finished space."
+>
+  <PageHero
+    eyebrow="How we work"
+    title="Reliable partners, from first call to final shine"
+    subtitle="We don't just complete a job and leave. We work side by side with our clients as partners — delivering quality, fair pricing and follow-up that lasts."
+    image={heroImg}
+    crumb="How we work"
+  />
+
+  <!-- PILLARS -->
+  <section class="relative overflow-hidden bg-paper py-20 lg:py-28">
+    <div class="svc-bg" aria-hidden="true">
+      <span class="blob blob-blue"></span>
+      <span class="blob blob-yellow-2"></span>
+    </div>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+      <div class="grid gap-6 lg:grid-cols-3">
+        {pillars.map((p) => (
+          <div class="reveal svc-card tech-card spotlight glass-strong group relative flex flex-col rounded-3xl p-8" data-tilt="4">
+            <span class="icon-tile inline-flex h-14 w-14 items-center justify-center rounded-2xl text-[#0aa2c4]">
+              <Icon name={p.icon} class="h-7 w-7" />
+            </span>
+            <h2 class="mt-6 font-display text-xl font-bold text-ink">{p.title}</h2>
+            <p class="mt-3 leading-relaxed text-ink-600">{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="relative overflow-hidden bg-sand py-20 lg:py-28">
+    <div class="mx-auto max-w-7xl px-6 sm:px-8">
+      <div class="reveal mx-auto max-w-2xl text-center">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#0891b2]">The journey</p>
+        <h2 class="mt-4 font-display text-3xl font-extrabold leading-tight tracking-tight text-ink lg:text-4xl">Three simple steps</h2>
+        <p class="mt-4 text-lg text-ink-600">From the first call to the final shine.</p>
+      </div>
+      <div class="relative mt-16">
+        <div class="pointer-events-none absolute inset-x-0 top-[4.75rem] hidden h-px bg-gradient-to-r from-transparent via-[#00d4ff]/40 to-transparent lg:block"></div>
+        <div class="grid gap-6 lg:grid-cols-3">
+          {steps.map((s) => (
+            <article class="reveal svc-card tech-card glass-strong group relative rounded-3xl p-8 text-center" data-tilt="5">
+              <span class="absolute right-5 top-4 font-display text-3xl font-extrabold text-ink/10">{s.n}</span>
+              <span class="icon-tile mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl text-brand-blue">
+                <Icon name={s.icon} class="h-7 w-7" />
+              </span>
+              <h3 class="mt-6 font-display text-xl font-bold text-ink">{s.title}</h3>
+              <p class="mt-3 leading-relaxed text-ink-600">{s.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERSHIP -->
+  <section class="relative overflow-hidden bg-paper py-20 lg:py-28">
+    <div class="relative z-10 mx-auto grid max-w-7xl gap-12 px-6 sm:px-8 lg:grid-cols-2 lg:items-center lg:gap-16">
+      <div class="reveal order-2 lg:order-1">
+        <div class="tech-card glass-strong relative overflow-hidden rounded-3xl p-2.5 shadow-xl">
+          <Image src={teamImg} alt="Our dedicated team" widths={[480, 800]} sizes="(max-width:1024px) 92vw, 520px" class="h-72 w-full rounded-2xl object-cover lg:h-96" />
+        </div>
+      </div>
+      <div class="reveal order-1 lg:order-2">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-blue-600">Side by side</p>
+        <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink lg:text-4xl">We stay on as long as you want us to</h2>
+        <p class="mt-6 text-lg leading-relaxed text-ink-600">
+          Our relationship doesn't end at hand-over. Clients become long-term partners — from weekly contract cleaning
+          to seasonal painting and renovation — backed by responsive follow-up and clear, friendly communication.
+        </p>
+        <ul class="mt-7 space-y-3">
+          {["Dedicated, experienced workforce", "Transparent, reasonable pricing", "Responsive WhatsApp updates", "Covering Penang, Butterworth & Kulim"].map((f) => (
+            <li class="flex items-start gap-3 text-ink">
+              <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-blue/10 text-brand-blue-600"><Icon name="tabler:check" class="h-4 w-4" /></span>
+              {f}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+</Page>

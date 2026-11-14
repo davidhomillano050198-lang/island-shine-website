@@ -1,0 +1,120 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<section id="experience" class="bg-mist">
+  <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+    <div class="reveal max-w-2xl">
+      <h2 class="font-display text-3xl font-bold text-ink md:text-4xl">Experience the work before we start</h2>
+      <p class="mt-4 text-ink-600">Spin a finished result in 3D, place it in your own room with AR, or step inside a 360&deg; walkthrough of a completed project.</p>
+    </div>
+
+    <div class="reveal mt-12 grid gap-6 lg:grid-cols-2">
+      <div class="tech-card spotlight overflow-hidden rounded-3xl bg-white p-4 shadow-sm">
+        <model-viewer
+          id="mv"
+          src="/models/showcase-placeholder.glb"
+          alt="Interactive 3D preview"
+          camera-controls
+          auto-rotate
+          touch-action="pan-y"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          shadow-intensity="1"
+          exposure="1"
+          loading="lazy"
+          style="width:100%;height:380px;background:#eef2fe;border-radius:1rem;"
+        >
+          <button slot="ar-button" class="absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white shadow-lg">
+            <Icon name="tabler:cube-3d-sphere" class="h-5 w-5" />
+            View in your space (AR)
+          </button>
+        </model-viewer>
+        <div class="flex items-center justify-between px-2 pt-3">
+          <p class="font-display font-semibold text-ink"><Icon name="tabler:rotate-3d" class="mr-1 inline h-5 w-5 align-text-bottom text-brand-blue" />3D &amp; AR preview</p>
+          <span class="rounded-full bg-mist px-2.5 py-1 text-xs text-ink-600">Placeholder model</span>
+        </div>
+      </div>
+
+      <div class="tech-card spotlight overflow-hidden rounded-3xl bg-white p-4 shadow-sm">
+        <div id="tour360" class="relative h-[380px] w-full cursor-grab overflow-hidden rounded-2xl bg-ink" data-src="/models/tour-360-placeholder.jpg">
+          <span id="tour-hint" class="pointer-events-none absolute bottom-4 left-1/2 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/55 px-4 py-2 text-sm font-medium text-white">
+            <Icon name="tabler:drag-drop" class="h-5 w-5" /> Drag to look around
+          </span>
+        </div>
+        <div class="flex items-center justify-between px-2 pt-3">
+          <p class="font-display font-semibold text-ink"><Icon name="tabler:view-360" class="mr-1 inline h-5 w-5 align-text-bottom text-brand-blue" />360&deg; virtual tour</p>
+          <span class="rounded-full bg-mist px-2.5 py-1 text-xs text-ink-600">Placeholder panorama</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const section = document.getElementById("experience");
+  let loaded = false;
+
+  const initTour = async () => {
+    const el = document.getElementById("tour360");
+    if (!el) return;
+    try {
+      const THREE = await import("three");
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setSize(el.clientWidth, el.clientHeight);
+      el.appendChild(renderer.domElement);
+      const scene = new THREE.Scene();
+      const cam = new THREE.PerspectiveCamera(72, el.clientWidth / el.clientHeight, 0.1, 100);
+      const geo = new THREE.SphereGeometry(50, 60, 40);
+      geo.scale(-1, 1, 1);
+      const tex = new THREE.TextureLoader().load((el as HTMLElement).dataset.src!);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: tex }));
+      scene.add(mesh);
+
+      let lon = 0, lat = 0, down = false, px = 0, py = 0;
+      el.addEventListener("pointerdown", (e) => { down = true; px = e.clientX; py = e.clientY; el.style.cursor = "grabbing"; document.getElementById("tour-hint")?.remove(); });
+      window.addEventListener("pointerup", () => { down = false; el.style.cursor = "grab"; });
+      window.addEventListener("pointermove", (e) => {
+        if (!down) return;
+        lon -= (e.clientX - px) * 0.15;
+        lat = Math.max(-85, Math.min(85, lat + (e.clientY - py) * 0.15));
+        px = e.clientX; py = e.clientY;
+      });
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let visible = true, raf = 0;
+      const render = () => {
+        if (!down && !reduce && visible) lon += 0.03;
+        const phi = THREE.MathUtils.degToRad(90 - lat);
+        const theta = THREE.MathUtils.degToRad(lon);
+        cam.lookAt(Math.sin(phi) * Math.cos(theta), Math.cos(phi), Math.sin(phi) * Math.sin(theta));
+        renderer.render(scene, cam);
+        raf = requestAnimationFrame(render);
+      };
+      raf = requestAnimationFrame(render);
+      new ResizeObserver(() => {
+        cam.aspect = el.clientWidth / el.clientHeight;
+        cam.updateProjectionMatrix();
+        renderer.setSize(el.clientWidth, el.clientHeight);
+      }).observe(el);
+      new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(el);
+    } catch (err) {
+      console.error("360 tour failed", err);
+    }
+  };
+
+  const load = () => {
+    if (loaded) return;
+    loaded = true;
+    import("@google/model-viewer");
+    initTour();
+  };
+
+  if (section) {
+    new IntersectionObserver(
+      ([e], obs) => { if (e.isIntersecting) { load(); obs.disconnect(); } },
+      { rootMargin: "300px" }
+    ).observe(section);
+  }
+</script>

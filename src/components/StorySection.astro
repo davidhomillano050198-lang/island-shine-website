@@ -1,0 +1,89 @@
+---
+// "The transformation" — an elegant icon timeline. Every chapter has its own
+// glowing icon orb (with a slowly rotating ring), connected by a glowing spine.
+// Each row animates in on scroll via the site-wide .reveal engine (orb pops,
+// text slides + staggers), so the scroll effect is reliable and every chapter
+// shows its own icon. A dark-tuned animated logo orb floats top-right.
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import logo from "../assets/images/logo.png";
+
+const chapters = [
+  { title: "The space, as we find it", text: "Every project starts with an honest look at what is there. We plan the scope, colours and timeline with you.", icon: "tabler:clipboard-search" },
+  { title: "A fresh coat", text: "Surface prep, colour consultation and durable finishes that transform the look and protect the building.", icon: "tabler:brush" },
+  { title: "Renovated to spec", text: "Fit-outs and upgrades carried out by an experienced team, delivered on time and on budget.", icon: "tabler:tools" },
+  { title: "Spotless handover", text: "We remove every trace of dust and residue with eco-friendly products, ready for you to move in.", icon: "tabler:sparkles" },
+];
+---
+
+<section id="story" class="relative overflow-hidden bg-[#0a0f1f] py-20 text-white lg:py-28">
+  <div class="dot-grid absolute inset-0 opacity-50" aria-hidden="true"></div>
+  <span class="absolute -left-24 top-1/4 h-80 w-80 rounded-full" style="background:radial-gradient(circle,rgba(0,212,255,0.16),transparent 70%);" aria-hidden="true"></span>
+  <span class="absolute -right-20 bottom-1/4 h-80 w-80 rounded-full" style="background:radial-gradient(circle,rgba(61,93,212,0.22),transparent 70%);" aria-hidden="true"></span>
+
+  <!-- floating animated brand mark (decorative, desktop only) -->
+  <div class="pointer-events-none absolute right-[3%] top-8 z-0 hidden lg:block xl:right-[5%]" aria-hidden="true">
+    <div class="logo-stage h-60 w-60 xl:h-72 xl:w-72">
+      <span class="logo-orb-dark h-[86%] w-[86%]"></span>
+      <span class="logo-ring logo-ring-a h-full w-full border border-dashed border-[#00d4ff]/25"></span>
+      <span class="logo-ring logo-ring-b h-[70%] w-[70%] border border-white/10">
+        <span class="absolute left-1/2 top-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#00d4ff]" style="box-shadow:0 0 12px 4px rgba(0,212,255,0.5);"></span>
+      </span>
+      <span class="twinkle absolute right-[7%] top-[13%] text-brand-yellow"><Icon name="tabler:sparkles" class="h-4 w-4" /></span>
+      <span class="twinkle absolute bottom-[16%] left-[8%] text-[#00d4ff]" style="animation-delay:1.4s"><Icon name="tabler:sparkles" class="h-3.5 w-3.5" /></span>
+      <div class="logo-breathe relative w-[62%]">
+        <Image src={logo} alt="" widths={[320, 512]} sizes="280px" class="h-auto w-full" />
+      </div>
+    </div>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+    <!-- heading -->
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="reveal r-delay text-sm font-semibold uppercase tracking-[0.18em] text-brand-yellow" style="--i:0">The transformation</p>
+      <h2 class="reveal r-delay mt-3 font-display text-3xl font-extrabold tracking-tight md:text-5xl" style="--i:1">From bare space to spotless handover</h2>
+      <p class="reveal r-delay mx-auto mt-4 max-w-xl text-lg text-white/65" style="--i:2">Four stages, one accountable team — scroll the journey.</p>
+    </div>
+
+    <!-- timeline -->
+    <div class="relative mt-16 lg:mt-20">
+      <!-- glowing spine -->
+      <div class="absolute left-9 top-4 hidden h-[calc(100%-2rem)] w-px bg-gradient-to-b from-[#00d4ff]/50 via-brand-blue/30 to-transparent sm:left-[3.5rem] sm:block lg:left-1/2 lg:-translate-x-1/2" aria-hidden="true"></div>
+
+      <div class="space-y-12 lg:space-y-16">
+        {chapters.map((c, i) => {
+          const flip = i % 2 === 1;
+          return (
+            <div class="relative grid items-center gap-5 sm:grid-cols-[7rem_1fr] sm:gap-8 lg:grid-cols-2 lg:gap-16">
+              <!-- icon orb -->
+              <div class:list={["reveal r-pop flex justify-center lg:justify-end", flip && "lg:order-2 lg:justify-start"]}>
+                <div class="relative flex h-24 w-24 items-center justify-center sm:h-28 sm:w-28">
+                  <span class="spin-slow absolute -inset-1 rounded-full border border-dashed border-[#00d4ff]/30" aria-hidden="true"></span>
+                  <span class="spin-slow-rev absolute inset-2 rounded-full border border-white/10" aria-hidden="true"></span>
+                  <div class="story-orb relative flex h-20 w-20 items-center justify-center rounded-full backdrop-blur-sm sm:h-24 sm:w-24">
+                    <Icon name={c.icon} class="h-9 w-9 text-white sm:h-11 sm:w-11" />
+                  </div>
+                  <span class="absolute -right-1 -top-1 flex h-8 w-8 items-center justify-center rounded-full bg-brand-yellow font-display text-sm font-extrabold text-[#15130f] shadow-lg">{i + 1}</span>
+                </div>
+              </div>
+
+              <!-- text -->
+              <div class:list={["reveal r-delay", flip ? "r-left lg:order-1 lg:text-right" : "r-right"]} style="--i:1">
+                <span class="font-display text-5xl font-extrabold leading-none text-white/10">0{i + 1}</span>
+                <h3 class="mt-1 font-display text-2xl font-bold md:text-3xl">{c.title}</h3>
+                <p class:list={["mt-3 leading-relaxed text-white/70", flip ? "lg:ml-auto" : "", "max-w-md"]}>{c.text}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    <div class="reveal r-delay mt-16 text-center">
+      <a href="/contact" class="btn-primary magnetic inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-bold">
+        Start your transformation
+        <Icon name="tabler:arrow-right" class="h-5 w-5" />
+      </a>
+    </div>
+  </div>
+</section>

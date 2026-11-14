@@ -1,0 +1,125 @@
+---
+// "How it works" storytelling timeline (LIGHT, brand blue + yellow). Each step
+// is its own image + text row, alternating sides. Every element carries a
+// `.reveal` class so the site-wide scroll-reveal engine animates it in as it
+// enters view; `r-left`/`r-right` slide images from their side, `r-delay` + --i
+// stagger the text + chips so each step assembles one piece at a time.
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { img } from "../lib/img";
+
+const steps = [
+  {
+    n: "01",
+    icon: "tabler:calendar-check",
+    title: "Book your project",
+    text: "Tell us what you need and get a fast, no-obligation quote — any time, anywhere in Penang, Butterworth & Kulim.",
+    image: "journey-glass-shine",
+    features: ["No-obligation quote", "Fast WhatsApp reply", "Penang, Butterworth & Kulim"],
+  },
+  {
+    n: "02",
+    icon: "tabler:tools",
+    title: "We paint, renovate & clean",
+    text: "Our CIDB-certified painters, renovators and professional cleaning crew transform your space, on time and on budget, with minimal disruption.",
+    image: "journey-skylift-paint",
+    features: ["Painting & renovation", "Professional cleaning", "On time & on budget"],
+  },
+  {
+    n: "03",
+    icon: "tabler:sparkles",
+    title: "Enjoy the shine",
+    text: "We hand it back spotless with machine-powered, SDS-certified post-renovation cleaning.",
+    image: "journey-machine-crew",
+    features: ["Machine-powered cleaning", "Spotless hand-over", "Follow-up that lasts"],
+  },
+];
+
+const stepData = steps.map((s) => ({ ...s, src: img(s.image) }));
+---
+
+<section id="process" class="relative overflow-hidden bg-paper py-20 text-ink lg:py-28">
+  <!-- ambient brand glow + blueprint grid -->
+  <div class="svc-bg" aria-hidden="true">
+    <span class="blob blob-yellow"></span>
+    <span class="blob blob-blue"></span>
+    <span class="blob blob-yellow-2"></span>
+  </div>
+  <div class="svc-grid absolute inset-0" aria-hidden="true"></div>
+
+  <div class="relative z-10 mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+    <!-- heading -->
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="reveal r-delay inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-brand-blue-600" style="--i:0">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00d4ff] opacity-70"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-[#00d4ff]"></span>
+        </span>
+        How it works
+      </p>
+      <h2 class="reveal r-delay mt-5 font-display text-4xl font-extrabold leading-tight tracking-tight text-ink sm:text-5xl" style="--i:1">The Island Shine journey</h2>
+      <p class="reveal r-delay mt-4 text-lg text-ink-600" style="--i:2">From the first call to the final shine — three simple steps.</p>
+    </div>
+
+    <!-- timeline -->
+    <div class="relative mt-16 lg:mt-24">
+      <div class="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-brand-blue/30 to-transparent lg:block" aria-hidden="true"></div>
+
+      <div class="space-y-16 lg:space-y-28">
+        {stepData.map((s, i) => {
+          const imageLeft = i % 2 === 0;
+          return (
+            <div class="relative grid items-center gap-8 lg:grid-cols-2 lg:gap-20">
+              <!-- center timeline node -->
+              <span class="journey-mark reveal r-pop r-delay absolute left-1/2 top-8 z-10 hidden h-5 w-5 -translate-x-1/2 items-center justify-center rounded-full border-2 border-brand-blue bg-white lg:flex" style="--i:0" aria-hidden="true">
+                <span class="h-1.5 w-1.5 rounded-full bg-brand-blue"></span>
+              </span>
+
+              <!-- image -->
+              <div class:list={["reveal r-delay", imageLeft ? "r-left" : "r-right lg:order-2"]} style="--i:1">
+                <div class="tech-card float-soft relative overflow-hidden rounded-[2rem] shadow-[0_30px_70px_-26px_rgba(61,93,212,0.5)] ring-1 ring-line" style={`animation-delay:-${i * 1.6}s`}>
+                  <Image
+                    src={s.src}
+                    alt={s.title}
+                    widths={[500, 800]}
+                    sizes="(max-width:1024px) 92vw, 44vw"
+                    class="aspect-[4/3] w-full object-cover transition-transform duration-700 hover:scale-[1.04]"
+                  />
+                  <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-black/45 via-transparent to-transparent"></div>
+                  <span class="pointer-events-none absolute left-5 top-3 font-display text-6xl font-extrabold leading-none text-white drop-shadow-lg">{s.n}</span>
+                  <span class="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-brand-yellow px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#15130f] shadow">
+                    <Icon name="tabler:player-play-filled" class="h-3 w-3" /> Step {s.n}
+                  </span>
+                </div>
+              </div>
+
+              <!-- text -->
+              <div class={imageLeft ? "" : "lg:order-1"}>
+                <div class="reveal r-delay flex items-center gap-4" style="--i:2">
+                  <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-blue font-display text-lg font-extrabold text-white shadow-lg shadow-brand-blue/30">{s.n}</span>
+                  <span class="icon-tile inline-flex h-12 w-12 items-center justify-center rounded-2xl text-[#0aa2c4]"><Icon name={s.icon} class="h-6 w-6" /></span>
+                </div>
+                <h3 class="reveal r-delay mt-6 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl" style="--i:3">{s.title}</h3>
+                <p class="reveal r-delay mt-4 max-w-md text-lg leading-relaxed text-ink-600" style="--i:4">{s.text}</p>
+                <ul class="mt-6 flex flex-wrap gap-2.5">
+                  {s.features.map((f, fi) => (
+                    <li class="reveal r-delay inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-2 text-sm font-medium text-ink-600 shadow-sm" style={`--i:${5 + fi}`}>
+                      <Icon name="tabler:check" class="h-4 w-4 text-brand-blue-600" /> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    <div class="reveal r-delay mt-16 text-center lg:mt-24">
+      <a href="/contact" class="btn-primary magnetic inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-bold">
+        Book my project
+        <Icon name="tabler:arrow-right" class="h-5 w-5" />
+      </a>
+    </div>
+  </div>
+</section>

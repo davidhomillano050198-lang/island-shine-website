@@ -1,0 +1,152 @@
+---
+import Page from "../components/Page.astro";
+import PageHero from "../components/PageHero.astro";
+import CTABand from "../components/CTABand.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { img, imgs } from "../lib/img";
+import { site } from "../data/site";
+
+const heroImg = img("ph-gallery");
+const keys = [
+  "gal-17", "gal-01", "fb-industrial", "gal-02", "fb-postreno-vac", "corridor",
+  "gal-16", "gal-04", "fb-skylift", "gal-12", "gal-18", "fb-buffer",
+  "gal-05", "gal-15", "scrubber-warehouse", "gal-07", "gal-06", "facade-worker",
+  "gal-11", "gal-14", "gal-08", "gal-20", "gal-03", "gal-10",
+];
+const photos = keys.map((k) => ({ key: k, src: img(k) }));
+const painting = [
+  { key: "paint-highrise", title: "High-rise exterior", place: "Skylift façade repaint", feature: true },
+  { key: "paint-column", title: "Feature columns", place: "Charcoal porch columns" },
+  { key: "paint-grille", title: "Grilles & gates", place: "Detailed metalwork recoat" },
+  { key: "paint-ceiling", title: "Ceilings & entrances", place: "Fresh white overhead finish" },
+  { key: "paint-corridor", title: "Corridors", place: "Floors protected, walls refreshed" },
+  { key: "paint-railing", title: "Staircase railings", place: "Hand-finished balustrades" },
+  { key: "paint-stairwell", title: "Interior walls", place: "Stairwell stain cover & repaint" },
+].map((p) => ({ ...p, src: img(p.key) }));
+---
+
+<Page
+  title={`Gallery | ${site.shortName}`}
+  description="A visual journey through immaculate spaces transformed by Island Shine's painting, renovation and cleaning services across Penang, Butterworth & Kulim."
+>
+  <PageHero
+    eyebrow="Gallery"
+    title="A visual symphony of sparkling spaces"
+    subtitle="Step into our gallery and journey through a world of immaculate spaces, where each image tells a tale of sparkling cleanliness, fresh finishes and meticulous craftsmanship."
+    image={heroImg}
+    crumb="Gallery"
+  />
+
+  <section class="relative overflow-hidden bg-paper py-16 lg:py-24">
+    <div class="svc-bg" aria-hidden="true">
+      <span class="blob blob-yellow-2"></span>
+      <span class="blob blob-blue"></span>
+    </div>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+      <!-- LATEST PAINTING WORK -->
+      <div class="mb-14 lg:mb-20">
+        <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-brand-blue">
+              <Icon name="tabler:paint" class="h-4 w-4" /> Latest painting work
+            </p>
+            <h2 class="mt-3 font-display text-3xl font-extrabold tracking-tight text-ink lg:text-4xl">Fresh coats, real projects</h2>
+          </div>
+          <p class="max-w-sm text-ink-600">Recent jobs by our own painting crew around Penang, from high-rise façades to interior stairwells.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+          {painting.map((p) => (
+            <button
+              type="button"
+              class:list={[
+                "lightbox-trigger group relative block overflow-hidden rounded-2xl bg-ink shadow-sm ring-1 ring-line transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue",
+                p.feature && "col-span-2 lg:col-span-1 lg:row-span-2",
+              ]}
+              aria-label={`Enlarge photo: ${p.title}`}
+            >
+              <Image
+                src={p.src}
+                alt={`Island Shine painting: ${p.title.toLowerCase()}, ${p.place.toLowerCase()}`}
+                widths={[360, 600, 960]}
+                sizes="(max-width:1024px) 46vw, 300px"
+                class:list={[
+                  "h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]",
+                  p.feature ? "aspect-[4/3] lg:aspect-auto" : "aspect-[3/4]",
+                ]}
+              />
+              <span class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent p-4 pt-12 text-left">
+                <span class="block font-display text-base font-bold text-white sm:text-lg">{p.title}</span>
+                <span class="block text-xs text-white/75 sm:text-sm">{p.place}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <p class="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-ink-600">More of our work</p>
+      <div class="gap-5 [column-fill:_balance] columns-2 md:columns-3 lg:columns-4">
+        {photos.map((p) => (
+          <button
+            type="button"
+            class="lightbox-trigger group mb-5 block w-full break-inside-avoid overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-line transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue"
+            aria-label="Enlarge photo"
+          >
+            <Image
+              src={p.src}
+              alt="Island Shine project"
+              widths={[300, 500, 760]}
+              sizes="(max-width:768px) 45vw, 300px"
+              class="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand title="Want results like these?" />
+
+  <!-- Lightbox overlay -->
+  <div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/85 p-4 backdrop-blur-sm" aria-hidden="true">
+    <button id="lightbox-close" class="absolute right-5 top-5 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20" aria-label="Close">
+      <Icon name="tabler:x" class="h-6 w-6" />
+    </button>
+    <img id="lightbox-img" src="" alt="" class="max-h-[88vh] max-w-[92vw] rounded-2xl object-contain shadow-2xl" />
+  </div>
+</Page>
+
+<script>
+  const box = document.getElementById("lightbox");
+  const boxImg = document.getElementById("lightbox-img") as HTMLImageElement | null;
+  const closeBtn = document.getElementById("lightbox-close");
+  const open = (src: string, alt: string) => {
+    if (!box || !boxImg) return;
+    boxImg.src = src;
+    boxImg.alt = alt;
+    box.classList.remove("hidden");
+    box.classList.add("flex");
+    box.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  };
+  const close = () => {
+    if (!box) return;
+    box.classList.add("hidden");
+    box.classList.remove("flex");
+    box.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  };
+  document.querySelectorAll<HTMLButtonElement>(".lightbox-trigger").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const im = btn.querySelector("img");
+      if (im) open(im.currentSrc || im.src, im.alt);
+    });
+  });
+  closeBtn?.addEventListener("click", close);
+  box?.addEventListener("click", (e) => {
+    if (e.target === box) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+</script>

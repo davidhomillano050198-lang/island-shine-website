@@ -1,0 +1,75 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "../data/site";
+const services = [
+  "Building painting",
+  "Renovation",
+  "Post-renovation cleaning",
+  "Contract cleaning",
+  "High-rise / industrial",
+  "Carpet cleaning",
+  "Landscaping",
+  "Other",
+];
+const inputClass =
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-ink placeholder:text-slate-400 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25";
+---
+
+<form
+  id="quote-form"
+  class="space-y-4"
+  data-wa={site.whatsapp.number}
+  action={`mailto:${site.email}`}
+  method="post"
+  enctype="text/plain"
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div class="space-y-1.5">
+      <label for="qf-name" class="block text-sm font-semibold text-ink">Your name</label>
+      <input id="qf-name" name="name" type="text" required autocomplete="name" placeholder="e.g. Maria Anthony" class={inputClass} />
+    </div>
+    <div class="space-y-1.5">
+      <label for="qf-phone" class="block text-sm font-semibold text-ink">Phone</label>
+      <input id="qf-phone" name="phone" type="tel" required autocomplete="tel" placeholder="e.g. 012-345 6789" class={inputClass} />
+    </div>
+  </div>
+
+  <div class="space-y-1.5">
+    <label for="qf-service" class="block text-sm font-semibold text-ink">Service needed</label>
+    <select id="qf-service" name="service" class={inputClass}>
+      {services.map((s) => (<option value={s}>{s}</option>))}
+    </select>
+  </div>
+
+  <div class="space-y-1.5">
+    <label for="qf-message" class="block text-sm font-semibold text-ink">Tell us about your project</label>
+    <textarea id="qf-message" name="message" rows="4" placeholder="Property type, location, and what you need done." class={inputClass}></textarea>
+  </div>
+
+  <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-blue px-6 py-3.5 font-semibold text-white transition-transform hover:-translate-y-0.5 active:scale-95 sm:w-auto">
+    <Icon name="tabler:brand-whatsapp" class="h-5 w-5" />
+    Send via WhatsApp
+  </button>
+  <p class="text-sm text-ink-600">
+    Prefer email? Write to <a href={`mailto:${site.email}`} class="font-semibold text-brand-blue underline-offset-2 hover:underline">{site.email}</a>.
+  </p>
+</form>
+
+<script>
+  // Progressive enhancement: compose the quote into a WhatsApp message so leads
+  // arrive instantly with no backend. The mailto action stays as a no-JS fallback.
+  const form = document.getElementById("quote-form") as HTMLFormElement | null;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const number = form.dataset.wa;
+    const data = new FormData(form);
+    const text = [
+      "New quote request from islandshinecleaning website",
+      `Name: ${data.get("name") || ""}`,
+      `Phone: ${data.get("phone") || ""}`,
+      `Service: ${data.get("service") || ""}`,
+      `Details: ${data.get("message") || ""}`,
+    ].join("\n");
+    window.open(`https://wa.me/${number}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+  });
+</script>

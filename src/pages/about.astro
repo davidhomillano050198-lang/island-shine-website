@@ -1,0 +1,132 @@
+---
+import Page from "../components/Page.astro";
+import PageHero from "../components/PageHero.astro";
+import CTABand from "../components/CTABand.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { img } from "../lib/img";
+import { site } from "../data/site";
+
+const teamImg = img("ph-services");
+const extractorImg = img("extractor");
+const cidbImg = img("cidb");
+
+const commitments = [
+  { icon: "tabler:shield-check", title: "Quality & safety first", text: "Our commitment to quality and safety is evident in every aspect of our work, on every project." },
+  { icon: "tabler:flask", title: "SDS-certified chemicals", text: "All our chemicals carry SDS certification, guaranteeing safety and compliance with industry regulations." },
+  { icon: "tabler:leaf", title: "A genuine green approach", text: "Environmentally friendly products, vacuums and microfibre dusting cloths protect your space and ours." },
+  { icon: "tabler:building-community", title: "Buildings that impress", text: "A well-maintained building reflects your identity and shapes how your customers perceive you." },
+];
+
+const stats = [
+  { num: "3000+", label: "Projects completed" },
+  { num: "CIDB", label: "Certified contractor" },
+  { num: "100%", label: "Insured & licensed" },
+  { num: "Eco", label: "SDS-certified products" },
+];
+---
+
+<Page
+  title={`About Us | ${site.shortName}`}
+  description="Island Shine Cleaning Services & Renovation is a CIDB-certified painting, renovation and machine-powered cleaning company serving commercial and residential properties across Penang, Butterworth & Kulim."
+>
+  <PageHero
+    eyebrow="About the company"
+    title="Clean, inviting and revitalised environments"
+    subtitle="Island Shine Cleaning Services & Renovation is a painting, renovation and professional cleaning company, registered with CIDB Malaysia, serving commercial and residential properties across Penang, Butterworth & Kulim."
+    image={teamImg}
+    crumb="About"
+  />
+
+  <!-- INTRO -->
+  <section class="relative overflow-hidden bg-paper py-20 lg:py-28">
+    <div class="relative z-10 mx-auto grid max-w-7xl gap-12 px-6 sm:px-8 lg:grid-cols-2 lg:items-center lg:gap-16">
+      <div class="reveal">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-blue-600">Who we are</p>
+        <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink lg:text-4xl">
+          A professional team dedicated to excellence
+        </h2>
+        <div class="mt-6 space-y-4 text-lg leading-relaxed text-ink-600">
+          <p>
+            We take pride in providing professional painting, renovation and construction solutions for your
+            commercial and residential buildings. As a company dedicated to excellence, we prioritise the well-being
+            of our clients and employees in everything we do.
+          </p>
+          <p>
+            Every project is backed by our machine-powered cleaning capability — industrial floor machines,
+            extraction equipment and high-access gear — tailored to your needs and budget. Experience the difference
+            of a neatly maintained building with Island Shine — reliable, on-time, budget-friendly, fully insured and
+            licensed.
+          </p>
+        </div>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/services" class="btn-primary magnetic inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 font-bold">
+            Explore services <Icon name="tabler:arrow-right" class="h-5 w-5" />
+          </a>
+          <a href="/how-we-work" class="btn-glass inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 font-semibold text-ink">
+            How we work
+          </a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="tech-card glass-strong relative overflow-hidden rounded-3xl p-2.5 shadow-xl">
+          <Image src={extractorImg} alt="Island Shine team at work" widths={[480, 800]} sizes="(max-width:1024px) 92vw, 520px" class="h-72 w-full rounded-2xl object-cover lg:h-96" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMITMENTS -->
+  <section class="relative overflow-hidden bg-sand py-20 lg:py-28">
+    <div class="svc-grid absolute inset-0" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+      <div class="reveal max-w-2xl">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-blue-600">Our promise</p>
+        <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink lg:text-4xl">Built on quality, safety and care</h2>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {commitments.map((c) => (
+          <div class="reveal svc-card tech-card spotlight glass-strong group relative flex flex-col rounded-3xl p-7">
+            <span class="icon-tile inline-flex h-12 w-12 items-center justify-center rounded-xl text-[#0aa2c4]">
+              <Icon name={c.icon} class="h-6 w-6" />
+            </span>
+            <h3 class="mt-5 font-display text-lg font-bold text-ink">{c.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-600">{c.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="relative overflow-hidden bg-[#0a0f1f] py-16 text-white lg:py-20">
+    <div class="dot-grid absolute inset-0 opacity-50" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto grid max-w-6xl gap-10 px-6 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+      {stats.map((s) => (
+        <div class="reveal">
+          <p class="font-display text-5xl font-extrabold leading-none text-white lg:text-6xl">{s.num}</p>
+          <div class="mt-4 h-px w-10 bg-brand-yellow"></div>
+          <p class="mt-4 text-sm text-white/65">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- CERTIFICATION -->
+  <section class="relative overflow-hidden bg-paper py-20 lg:py-24">
+    <div class="relative z-10 mx-auto flex max-w-5xl flex-col items-center gap-8 px-6 text-center sm:px-8 lg:flex-row lg:gap-12 lg:text-left">
+      <div class="reveal shrink-0 rounded-3xl bg-[#0a0f1f] p-6 shadow-xl">
+        <Image src={cidbImg} alt="CIDB Malaysia certified" width={160} height={160} class="h-28 w-28 rounded-xl object-contain" />
+      </div>
+      <div class="reveal">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-ink lg:text-3xl">Acknowledged by CIDB Malaysia</h2>
+        <p class="mt-4 max-w-xl text-lg leading-relaxed text-ink-600">
+          Island Shine is registered with the Construction Industry Development Board (CIDB) Malaysia — your assurance
+          of certified, accountable workmanship on commercial, residential and developer projects alike.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+</Page>

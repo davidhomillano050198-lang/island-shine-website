@@ -1,0 +1,209 @@
+---
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import logo from "../assets/images/logo.png";
+import { serviceCatalog } from "../data/services";
+
+type Child = { label: string; href: string; icon: string };
+type NavItem = { label: string; href: string; children?: Child[] };
+
+const nav: NavItem[] = [
+  { label: "Home", href: "/" },
+  {
+    label: "About",
+    href: "/about",
+    children: [
+      { label: "About the company", href: "/about", icon: "tabler:info-circle" },
+      { label: "How we work", href: "/how-we-work", icon: "tabler:route" },
+    ],
+  },
+  {
+    label: "Services",
+    href: "/services",
+    children: [
+      { label: "All services", href: "/services", icon: "tabler:layout-grid" },
+      ...serviceCatalog.map((s) => ({ label: s.title, href: `/services/${s.slug}`, icon: s.icon })),
+    ],
+  },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Reviews", href: "/reviews" },
+];
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path === href || path.startsWith(href + "/");
+const parentActive = (n: NavItem) =>
+  isActive(n.href) || (n.children?.some((c) => isActive(c.href)) ?? false);
+---
+
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-colors duration-300">
+  <div class="header-bar mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+    <a href="/" class="relative flex items-center" aria-label="Island Shine Cleaning Services & Renovation home">
+      <Image src={logo} alt="Island Shine Cleaning Services & Renovation" width={1526} height={1079} class="brand-logo" loading="eager" />
+      <span class="brand-word font-display text-2xl font-extrabold tracking-tight text-ink" aria-hidden="true">Island<span class="bg-gradient-to-r from-[#2c46ad] to-[#0891b2] bg-clip-text text-transparent"> Shine</span><span class="text-brand-yellow">.</span></span>
+    </a>
+
+    <nav class="nav-island hidden lg:absolute lg:left-1/2 lg:flex lg:-translate-x-1/2" aria-label="Primary">
+      <div id="nav-shell" class="nav-shell flex items-center gap-1 rounded-full glass px-2 py-1.5 shadow-lg shadow-brand-blue/10">
+        <span class="nav-indicator" aria-hidden="true"></span>
+        {nav.map((n) =>
+          n.children ? (
+            <div class="group relative">
+              <a
+                href={n.href}
+                data-nav-link
+                data-active={parentActive(n) ? "" : undefined}
+                class:list={["nav-pill-link inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold", { "is-active": parentActive(n) }]}
+                aria-current={parentActive(n) ? "page" : undefined}
+                aria-haspopup="true"
+              >
+                {n.label}
+                <Icon name="tabler:chevron-down" class="h-3.5 w-3.5 opacity-70 transition-transform duration-200 group-hover:rotate-180" />
+              </a>
+              <div class="invisible absolute left-1/2 top-full z-[60] -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                <div class:list={["glass-strong rounded-2xl p-2 shadow-xl shadow-brand-blue/10 ring-1 ring-line", n.children.length > 4 ? "w-[33rem]" : "w-64"]}>
+                  <div class:list={["grid gap-0.5", n.children.length > 4 && "grid-cols-2"]}>
+                    {n.children.map((c) => (
+                      <a
+                        href={c.href}
+                        class:list={["dropdown-link flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors", isActive(c.href) ? "bg-brand-blue/10 text-ink" : "text-ink-600 hover:bg-brand-blue/5 hover:text-ink"]}
+                        aria-current={isActive(c.href) ? "page" : undefined}
+                      >
+                        <span class="dropdown-ico inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue transition-transform"><Icon name={c.icon} class="h-4 w-4" /></span>
+                        <span class="text-sm font-semibold leading-tight">{c.label}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={n.href}
+              data-nav-link
+              data-active={isActive(n.href) ? "" : undefined}
+              class:list={["nav-pill-link rounded-full px-4 py-2 text-sm font-semibold", { "is-active": isActive(n.href) }]}
+              aria-current={isActive(n.href) ? "page" : undefined}
+            >{n.label}</a>
+          )
+        )}
+      </div>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/contact" class="nav-pill magnetic hidden items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition-transform hover:-translate-y-0.5 active:scale-95 lg:inline-flex">
+        Contact us
+        <Icon name="tabler:arrow-right" class="nav-cta-arrow h-4 w-4" />
+      </a>
+      <button id="nav-toggle" class="nav-toggle inline-flex h-11 w-11 items-center justify-center rounded-xl text-ink lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu lg:hidden">
+    <div class="mm-inner border-t border-black/5 bg-white/95 backdrop-blur-lg">
+      <nav class="mx-auto flex max-w-7xl flex-col gap-0.5 px-5 py-4 sm:px-6" aria-label="Mobile">
+        {nav.map((n, i) =>
+          n.children ? (
+            <details class="mobile-group mm-item" style={`--i:${i}`}>
+              <summary class:list={["flex cursor-pointer items-center justify-between rounded-xl px-3 py-3 text-base font-semibold hover:bg-sand", parentActive(n) ? "text-brand-blue-700" : "text-ink"]}>
+                {n.label}
+                <Icon name="tabler:chevron-down" class="mob-chev h-5 w-5 opacity-70" />
+              </summary>
+              <div class="mb-1 ml-3 flex flex-col gap-0.5 border-l border-line pl-3">
+                {n.children.map((c) => (
+                  <a
+                    href={c.href}
+                    class:list={["flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-sand", isActive(c.href) ? "text-brand-blue-700" : "text-ink-600"]}
+                    aria-current={isActive(c.href) ? "page" : undefined}
+                  >
+                    <Icon name={c.icon} class="h-4 w-4 text-brand-blue" />
+                    {c.label}
+                  </a>
+                ))}
+              </div>
+            </details>
+          ) : (
+            <a
+              href={n.href}
+              style={`--i:${i}`}
+              class:list={["mm-item rounded-xl px-3 py-3 text-base font-semibold hover:bg-sand", isActive(n.href) ? "text-brand-blue-700" : "text-ink"]}
+              aria-current={isActive(n.href) ? "page" : undefined}
+            >{n.label}</a>
+          )
+        )}
+        <a href="/contact" class="mm-item mt-2 rounded-full bg-brand-blue px-5 py-3 text-center text-base font-bold text-white" style={`--i:${nav.length}`}>Contact us</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  details.mobile-group > summary { list-style: none; }
+  details.mobile-group > summary::-webkit-details-marker { display: none; }
+  .mob-chev { transition: transform 0.25s ease; }
+  details.mobile-group[open] > summary .mob-chev { transform: rotate(180deg); }
+  .dropdown-link:hover .dropdown-ico { transform: translateY(-1px) scale(1.06); }
+</style>
+
+<script>
+  const header = document.getElementById("site-header");
+  const logo = header?.querySelector<HTMLElement>(".brand-logo");
+  const sentinel = document.createElement("div");
+  sentinel.style.cssText = "position:absolute;top:0;height:40px;width:1px;pointer-events:none;";
+  document.body.prepend(sentinel);
+  new IntersectionObserver(([e]) => {
+    const scrolled = !e.isIntersecting;
+    header?.classList.toggle("is-scrolled", scrolled);
+    if (logo) logo.style.transform = scrolled ? "scale(0.6)" : "";
+  }).observe(sentinel);
+
+  // Sliding "magic" indicator behind the desktop nav links.
+  const shell = document.getElementById("nav-shell");
+  const indicator = shell?.querySelector<HTMLElement>(".nav-indicator");
+  const links = shell ? Array.from(shell.querySelectorAll<HTMLElement>("[data-nav-link]")) : [];
+  const activeLink = links.find((l) => l.hasAttribute("data-active")) || null;
+
+  const moveTo = (el: HTMLElement | null) => {
+    if (!shell || !indicator || !el) {
+      if (indicator) indicator.style.opacity = "0";
+      return;
+    }
+    const s = shell.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    if (r.width === 0) { indicator.style.opacity = "0"; return; }
+    indicator.style.width = `${r.width}px`;
+    indicator.style.height = `${r.height}px`;
+    indicator.style.transform = `translate(${r.left - s.left}px, ${r.top - s.top}px)`;
+    indicator.style.opacity = "1";
+  };
+
+  // Initial placement without the slide animation.
+  if (indicator && activeLink) {
+    indicator.style.transition = "none";
+    moveTo(activeLink);
+    requestAnimationFrame(() => { indicator.style.transition = ""; });
+  }
+  links.forEach((l) => l.addEventListener("pointerenter", () => moveTo(l)));
+  shell?.addEventListener("pointerleave", () => moveTo(activeLink));
+  // Reposition once web fonts settle (font swap can change link widths).
+  if (activeLink) document.fonts?.ready.then(() => moveTo(activeLink));
+  let rt: number | undefined;
+  window.addEventListener("resize", () => {
+    window.clearTimeout(rt);
+    rt = window.setTimeout(() => moveTo(activeLink), 120);
+  });
+
+  // Animated mobile menu.
+  const toggle = document.getElementById("nav-toggle");
+  const menu = document.getElementById("mobile-menu");
+  const setOpen = (open: boolean) => {
+    menu?.classList.toggle("is-open", open);
+    toggle?.classList.toggle("is-open", open);
+    toggle?.setAttribute("aria-expanded", String(open));
+    toggle?.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+  toggle?.addEventListener("click", () => setOpen(!menu?.classList.contains("is-open")));
+  menu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+</script>

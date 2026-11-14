@@ -1,0 +1,56 @@
+---
+// Dark, high-tech call-to-action band reused at the foot of inner pages.
+import { Icon } from "astro-icon/components";
+import { site, waLink } from "../data/site";
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = "Schedule your appointment today",
+  text = "Tell us about your space and get a fast, no-obligation quote — any time, anywhere in Penang, Butterworth & Kulim.",
+} = Astro.props;
+const wa = waLink(site.whatsapp.number, site.whatsapp.prefill);
+---
+
+<section class="relative isolate overflow-hidden bg-[#0a0f1f] py-20 text-white lg:py-28">
+  <div class="dot-grid absolute inset-0 opacity-60" aria-hidden="true"></div>
+  <div class="absolute inset-0" aria-hidden="true">
+    <span class="absolute -left-24 top-0 h-80 w-80 rounded-full" style="background:radial-gradient(circle,rgba(61,93,212,0.45),transparent 70%);"></span>
+    <span class="absolute -right-16 bottom-0 h-80 w-80 rounded-full" style="background:radial-gradient(circle,rgba(0,212,255,0.32),transparent 70%);"></span>
+    <span class="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full" style="background:radial-gradient(circle,rgba(252,190,19,0.18),transparent 70%);"></span>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-4xl px-6 text-center sm:px-8">
+    <p class="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-[#00d4ff]">
+      <span class="relative flex h-2 w-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00d4ff] opacity-70"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-[#00d4ff]"></span>
+      </span>
+      Ready when you are
+    </p>
+    <h2 class="mt-5 font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-5xl">{title}</h2>
+    <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/70">{text}</p>
+
+    <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+      <a href="/contact" class="btn-primary magnetic inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-bold">
+        Get a free quote
+        <Icon name="tabler:arrow-right" class="h-5 w-5" />
+      </a>
+      {site.phones.map((p) => (
+        <a href={waLink(p.tel.replace("+", ""), site.whatsapp.prefill)} target="_blank" rel="noopener" class="inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-white/5 px-5 py-3.5 font-semibold backdrop-blur-sm transition-colors hover:bg-white/10">
+          <Icon name="tabler:brand-whatsapp" class="h-5 w-5 text-[#25D366]" />
+          <span class="text-left"><span class="block text-[11px] font-normal text-white/60">WhatsApp · {p.name}</span>{p.display}</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-7 gap-y-2 text-sm font-medium text-white/55">
+      <span class="inline-flex items-center gap-2"><Icon name="tabler:rosette-discount-check" class="h-4 w-4 text-brand-yellow" /> CIDB Malaysia</span>
+      <span class="inline-flex items-center gap-2"><Icon name="tabler:shield-check" class="h-4 w-4 text-brand-yellow" /> Fully insured</span>
+      <span class="inline-flex items-center gap-2"><Icon name="tabler:leaf" class="h-4 w-4 text-brand-yellow" /> Eco-friendly</span>
+      <span class="inline-flex items-center gap-2"><Icon name="tabler:trophy" class="h-4 w-4 text-brand-yellow" /> 3000+ projects</span>
+    </div>
+  </div>
+</section>

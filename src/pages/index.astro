@@ -1,0 +1,652 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
+import QuoteForm from "../components/QuoteForm.astro";
+import StorySection from "../components/StorySection.astro";
+import JourneySection from "../components/JourneySection.astro";
+import heroBg from "../assets/images/hero-bg-3.jpg";
+import heroMachine from "../assets/images/hero-machine.png";
+import heroPainter from "../assets/images/hero-painter.png";
+import { leadServices, moreServices } from "../data/services";
+import { testimonials } from "../data/testimonials";
+import { site, waLink } from "../data/site";
+import { img } from "../lib/img";
+
+// Kinetic ticker under the hero — the full service catalogue in motion.
+const tickerServices = [
+  "Building Painting",
+  "Renovation",
+  "Post-Renovation Cleaning",
+  "Contract Cleaning",
+  "High-Rise Cleaning",
+  "Factory & Industrial",
+  "Carpet Cleaning",
+  "Landscaping",
+];
+
+// Gallery teaser — curated tiles for an editorial bento grid (span sets tile size).
+// Painting + renovation lead (per client focus); cleaning tiles show the machine work
+// that actually delivers those services.
+const galleryTiles = [
+  { key: "journey-glass-shine", label: "High-rise façade cleaning", cat: "Cleaning", span: "col-span-2 row-span-2" },
+  { key: "paint-highrise", label: "Exterior repainting by skylift", cat: "Painting", span: "col-span-2", pos: "center 35%" },
+  { key: "paint-grille", label: "Grille & gate recoat", cat: "Painting", span: "" },
+  { key: "paint-railing", label: "Staircase railing finish", cat: "Painting", span: "" },
+  { key: "fb-industrial", label: "Industrial machine cleaning", cat: "Cleaning", span: "col-span-2" },
+  { key: "paint-column", label: "Feature column repaint", cat: "Painting", span: "" },
+  { key: "clean-kitchen", label: "Kitchen & cabinet detailing", cat: "Cleaning", span: "" },
+  { key: "fb-buffer", label: "Machine floor scrubbing", cat: "Cleaning", span: "" },
+  { key: "clean-floor-polish", label: "Floor polishing", cat: "Cleaning", span: "" },
+  { key: "fb-skylift", label: "Skylift window cleaning", cat: "Cleaning", span: "" },
+  { key: "fb-postreno-vac", label: "Post-renovation cleaning", cat: "Renovation", span: "" },
+];
+
+import hero from "../assets/images/hero-highrise.png";
+import imgPainting from "../assets/images/service-painting.png";
+import imgRenovation from "../assets/images/service-renovation.png";
+import imgPostreno from "../assets/images/service-postreno.png";
+import galBefore from "../assets/images/gallery-before.png";
+import galEco from "../assets/images/gallery-eco.png";
+import galVacuum from "../assets/images/gallery-vacuum.png";
+
+const leadImg: Record<string, ImageMetadata> = {
+  painting: imgPainting,
+  renovation: imgRenovation,
+  postreno: imgPostreno,
+};
+
+
+const stats = [
+  { num: 3000, suffix: "+", l: "Projects completed", icon: "tabler:checks" },
+  { text: "CIDB", l: "Certified contractor", icon: "tabler:rosette-discount-check" },
+  { num: 100, suffix: "%", l: "Insured & licensed", icon: "tabler:shield-check" },
+  { text: "Eco", l: "SDS-certified products", icon: "tabler:leaf" },
+];
+
+const steps = [
+  { n: "01", icon: "tabler:calendar-check", title: "Book your project", text: "Tell us what you need and get a fast, no-obligation quote, any time." },
+  { n: "02", icon: "tabler:tools", title: "We paint, renovate & clean", text: "Painting, renovation and professional cleaning by one CIDB-certified team, on time and on budget." },
+  { n: "03", icon: "tabler:sparkles", title: "Enjoy the shine", text: "We hand it back spotless with machine-powered, eco-friendly cleaning." },
+];
+
+// Two marquee rows for the testimonial wall (split roughly in half).
+const reviewRowA = testimonials.slice(0, Math.ceil(testimonials.length / 2));
+const reviewRowB = testimonials.slice(Math.ceil(testimonials.length / 2));
+// Soft avatar tints cycled per reviewer so the wall feels human, not templated.
+const avatarTints = [
+  "bg-brand-blue/10 text-brand-blue-700",
+  "bg-[#0aa2c4]/10 text-[#067a94]",
+  "bg-brand-yellow/20 text-[#7a5b00]",
+];
+const heroQuote = waLink(site.whatsapp.number, site.whatsapp.prefill);
+---
+
+<Base>
+  <span id="top"></span>
+  <Header />
+
+  <main>
+    <!-- HERO: layered 3D scene (bg + ambient + animated logo centerpiece) -->
+    <section class="hero relative isolate flex min-h-[100svh] flex-col overflow-hidden pt-28 lg:pt-32">
+      <!-- LAYER 1: background — every screen sees the whole scene: sharp full-width image anchored
+           to the figures at the bottom, dissolving into a blurred ambient fill above -->
+      <div class="absolute inset-0 -z-30 overflow-hidden" aria-hidden="true">
+        <Image src={heroBg} alt="" widths={[768, 1280, 1920]} sizes="100vw" class="hero-bg-img absolute inset-0 h-full w-full scale-110 object-cover opacity-90 blur-lg" loading="eager" />
+        <Image src={heroBg} alt="" widths={[768, 1280, 1920]} sizes="100vw" class="absolute bottom-0 left-0 h-auto w-full object-contain [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_26%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_26%)]" loading="eager" />
+      </div>
+      <!-- LAYER 2: ambient (scrim, blobs, sun rays, dust, vignette) -->
+      <div class="absolute inset-0 -z-20 overflow-hidden" aria-hidden="true">
+        <div class="absolute inset-0" style="background: radial-gradient(58% 55% at 50% 40%, rgba(246,248,252,0.85) 0%, rgba(246,248,252,0.5) 55%, rgba(246,248,252,0.12) 100%);"></div>
+        <span class="hero-blob hero-blob-a" style="width:32rem;height:32rem;top:-9rem;left:-7rem;background:radial-gradient(circle,rgba(61,93,212,0.16),transparent 70%);"></span>
+        <span class="hero-blob hero-blob-b" style="width:28rem;height:28rem;bottom:-9rem;right:8%;background:radial-gradient(circle,rgba(252,190,19,0.16),transparent 70%);"></span>
+        <div class="hero-rays absolute inset-0 opacity-60"></div>
+        <span class="dust" style="width:6px;height:6px;left:28%;bottom:24%;animation-duration:13s;"></span>
+        <span class="dust" style="width:4px;height:4px;left:46%;bottom:12%;animation-duration:17s;animation-delay:3s;"></span>
+        <span class="dust" style="width:5px;height:5px;left:62%;bottom:30%;animation-duration:15s;animation-delay:6s;"></span>
+        <span class="dust" style="width:4px;height:4px;left:78%;bottom:18%;animation-duration:19s;animation-delay:2s;"></span>
+        <div class="hero-vignette absolute inset-0"></div>
+      </div>
+
+      <!-- LAYER 2.5: interactive paint-trail canvas (brand-colour brush strokes follow the cursor) -->
+      <canvas id="paint-canvas" class="pointer-events-none absolute inset-0 z-[2] h-full w-full" aria-hidden="true"></canvas>
+
+      <!-- LAYER 3: the dual flanks the centered copy — machine cleaning left, painting & renovation right -->
+      <div class="group absolute bottom-0 left-2 z-[3] lg:left-[3%]">
+        <div class="girl-enter">
+          <Image src={heroMachine} alt="Island Shine specialist operating an industrial floor scrubbing machine" widths={[420, 491]} sizes="(max-width: 1024px) 32vw, 310px" class="h-[15rem] w-auto origin-bottom object-contain drop-shadow-[0_24px_44px_rgba(20,26,43,0.28)] transition-transform duration-[900ms] ease-out will-change-transform group-hover:scale-[1.06] sm:h-[22rem] lg:h-[28rem] xl:h-[38rem]" loading="eager" />
+        </div>
+      </div>
+      <div class="group absolute bottom-0 right-2 z-[3] lg:right-[3%]">
+        <div class="girl-enter" style="animation-delay:0.4s">
+          <Image src={heroPainter} alt="Island Shine painting and renovation specialist" widths={[420, 484]} sizes="(max-width: 1024px) 34vw, 320px" class="h-[16rem] w-auto origin-bottom object-contain drop-shadow-[0_24px_44px_rgba(20,26,43,0.28)] transition-transform duration-[900ms] ease-out will-change-transform group-hover:scale-[1.06] sm:h-[23rem] lg:h-[30rem] xl:h-[40rem]" loading="eager" />
+        </div>
+      </div>
+
+      <!-- CONTENT: copy centered between the two specialists -->
+      <div class="pointer-events-none relative z-10 mx-auto flex w-full max-w-[1440px] flex-1 items-center justify-center px-5 sm:px-6 lg:px-8">
+        <div class="hero-stagger pointer-events-auto mx-auto w-full max-w-2xl text-center pb-[17rem] pt-4 sm:pb-[24rem] lg:pb-0 lg:pt-0">
+          <div class="inline-flex items-center gap-3 rounded-full glass px-4 py-2 shadow-sm">
+            <span class="flex -space-x-2.5">
+              {testimonials.slice(0, 3).map((t, i) => (
+                <span class:list={["flex h-8 w-8 items-center justify-center rounded-full font-display text-xs font-bold ring-2 ring-white", avatarTints[i % avatarTints.length]]}>{t.name.charAt(0)}</span>
+              ))}
+            </span>
+            <span class="flex items-center gap-1.5 text-sm font-semibold text-ink"><Icon name="tabler:star-filled" class="h-4 w-4 text-brand-yellow" /> 5.0</span>
+            <span class="text-sm text-ink-600">from verified reviews</span>
+          </div>
+
+          <h1 class="mt-6 font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.5rem]">
+            Professional{" "}
+            <span class="bg-gradient-to-r from-[#2c46ad] to-[#0aa2c4] bg-clip-text text-transparent">painting, renovation &amp; cleaning</span>{" "}
+            specialists
+          </h1>
+          <p class="mx-auto mt-6 max-w-md text-base leading-relaxed text-ink-600 md:text-lg">
+            We concentrate on building painting and renovation — and finish every hand-over with machine-powered post-renovation cleaning. CIDB-certified, fully insured and eco-friendly, across Penang, Butterworth & Kulim.
+          </p>
+
+          <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+            <a href="#quote" class="btn-primary magnetic inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-bold">
+              Get free quote
+              <Icon name="tabler:arrow-right" class="h-5 w-5" />
+            </a>
+            {site.phones.map((p) => (
+              <a href={waLink(p.tel.replace("+", ""), site.whatsapp.prefill)} target="_blank" rel="noopener" class="btn-glass inline-flex items-center gap-3 rounded-2xl px-5 py-3 text-ink">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#25D366]/15 text-[#128C7E]"><Icon name="tabler:brand-whatsapp" class="h-5 w-5" /></span>
+                <span class="text-left">
+                  <span class="block text-[11px] text-ink-600">WhatsApp · {p.name}</span>
+                  <span class="block font-bold text-ink">{p.display}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+
+          <!-- trust grid: the four proof points, aligned as one modern 2x2 set -->
+          <div class="mx-auto mt-8 grid max-w-md grid-cols-2 gap-3">
+            {[
+              { icon: "tabler:sparkles", t: "Eco-friendly", s: "SDS-certified", tile: "bg-brand-yellow text-[#15130f]" },
+              { icon: "tabler:shield-check", t: "Fully insured", s: "& licensed", tile: "bg-brand-blue text-white" },
+              { icon: "tabler:rosette-discount-check", t: "CIDB certified", s: "Registered contractor", tile: "bg-brand-blue text-white" },
+              { icon: "tabler:trophy", t: "3000+ projects", s: "since day one", tile: "bg-brand-yellow text-[#15130f]" },
+            ].map((c) => (
+              <div class="group flex items-center gap-3 rounded-2xl border border-white/70 bg-white/70 p-3 shadow-[0_14px_30px_-20px_rgba(20,26,43,0.35)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-blue/30 hover:shadow-[0_20px_40px_-20px_rgba(61,93,212,0.4)]">
+                <span class:list={["flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm transition-transform duration-300 group-hover:scale-110", c.tile]}><Icon name={c.icon} class="h-5 w-5" /></span>
+                <span class="min-w-0">
+                  <span class="block truncate text-sm font-bold tracking-tight text-ink">{c.t}</span>
+                  <span class="block truncate text-xs text-ink-600">{c.s}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- services ticker: kinetic light strip bridging hero → services -->
+    <section class="relative z-10 overflow-hidden border-y border-line bg-[linear-gradient(90deg,#e9eefb,#f8fafd_35%,#f8fafd_65%,#fbf3dd)] py-4" aria-label="Our services">
+      <span class="pointer-events-none absolute -left-16 top-1/2 h-24 w-72 -translate-y-1/2 rounded-full" style="background:radial-gradient(closest-side,rgba(61,93,212,0.14),transparent);" aria-hidden="true"></span>
+      <span class="pointer-events-none absolute -right-16 top-1/2 h-24 w-72 -translate-y-1/2 rounded-full" style="background:radial-gradient(closest-side,rgba(252,190,19,0.18),transparent);" aria-hidden="true"></span>
+      <div class="marquee marquee-mask relative">
+        <div class="marquee-track items-center" style="--dur:42s">
+          {[...tickerServices, ...tickerServices].map((s, i) => {
+            const k = i % tickerServices.length;
+            return (
+              <span class="flex items-center whitespace-nowrap">
+                <span class:list={["px-6 font-display text-sm font-extrabold uppercase tracking-[0.24em]", k % 2 ? "bg-gradient-to-r from-[#2c46ad] to-[#0aa2c4] bg-clip-text text-transparent" : "text-ink/75"]}>{s}</span>
+                <Icon name="tabler:sparkles" class:list={["h-4 w-4", k % 3 === 1 ? "text-brand-yellow" : "text-brand-blue/50"]} />
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES: high-tech bento -->
+    <section id="services" class="relative overflow-hidden bg-white py-24 text-slate-900 lg:py-32">
+      <div class="svc-bg" aria-hidden="true">
+        <span class="blob blob-yellow"></span>
+        <span class="blob blob-blue"></span>
+        <span class="blob blob-yellow-2"></span>
+      </div>
+      <div class="svc-grid absolute inset-0" aria-hidden="true"></div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+        <!-- header -->
+        <div class="reveal grid gap-x-12 gap-y-6 lg:grid-cols-12 lg:items-end">
+          <div class="lg:col-span-7">
+            <p class="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-brand-blue-600">
+              <span class="relative flex h-2 w-2">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00d4ff] opacity-70"></span>
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-[#00d4ff]"></span>
+              </span>
+              What we do
+            </p>
+            <h2 class="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-[3.4rem]">
+              Three crafts,<br class="hidden sm:block" /> one accountable team.
+            </h2>
+          </div>
+          <div class="lg:col-span-5 lg:pb-2">
+            <p class="text-lg leading-relaxed text-slate-500">
+              Painting and renovation are our focus — and we hand your space back spotless with machine-powered post-renovation cleaning.
+            </p>
+            <a href="#quote" class="group mt-6 inline-flex items-center gap-3 font-semibold text-brand-blue-600">
+              Get a free quote
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-blue-600/10 transition-colors duration-300 group-hover:bg-brand-blue-600 group-hover:text-white">
+                <Icon name="tabler:arrow-right" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <!-- bento service cards -->
+        <div class="mt-14 grid gap-6 md:grid-cols-3 lg:mt-16">
+          {leadServices.map((s, i) => (
+            <a
+              href="#quote"
+              class="svc-card tech-card spotlight glass-strong group relative flex flex-col rounded-3xl p-7 lg:p-8"
+              data-tilt="6"
+            >
+              <span class="pointer-events-none absolute right-6 top-5 font-display text-6xl font-extrabold leading-none text-slate-900/[0.05] transition-colors duration-500 group-hover:text-brand-blue/15">0{i + 1}</span>
+              <span class="icon-tile inline-flex h-14 w-14 items-center justify-center rounded-2xl text-[#0aa2c4]">
+                <Icon name={s.icon} class="h-7 w-7" />
+              </span>
+              <h3 class="mt-6 font-display text-xl font-bold text-slate-900">{s.title}</h3>
+              <p class="mt-2.5 text-sm leading-relaxed text-slate-500">{s.blurb}</p>
+              <span class="mt-auto flex items-center gap-2 pt-7 text-sm font-semibold text-brand-blue-600">
+                Start a project
+                <Icon name="tabler:arrow-right" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+              </span>
+            </a>
+          ))}
+        </div>
+
+        <!-- wider catalogue -->
+        <div class="reveal mt-12 lg:mt-14">
+          <div class="flex items-center gap-4">
+            <span class="text-sm font-semibold text-slate-900">We also handle</span>
+            <span class="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent"></span>
+            <span class="text-xs font-medium uppercase tracking-wider text-slate-400">{moreServices.length} more</span>
+          </div>
+          <ul class="mt-5 flex flex-wrap gap-3">
+            {moreServices.map((m) => (
+              <li class="chip-tech group inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-slate-600">
+                <Icon name={m.icon} class="h-4 w-4 text-brand-blue-600 transition-transform duration-300 group-hover:scale-110" />
+                {m.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS: high-tech scrollytelling journey -->
+    <JourneySection />
+
+    <!-- STORY: the one dark editorial moment -->
+    <StorySection />
+
+    <!-- STATS: high-tech animated counters over a fixed photo backdrop -->
+    <section class="bg-fixed-room relative overflow-hidden py-20 lg:py-28">
+      <div class="svc-grid absolute inset-0 opacity-70" aria-hidden="true"></div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+        <div class="reveal mx-auto mb-12 max-w-2xl text-center lg:mb-16">
+          <p class="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-brand-blue-600">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00d4ff] opacity-70"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-[#00d4ff]"></span>
+            </span>
+            By the numbers
+          </p>
+          <h2 class="mt-4 font-display text-3xl font-extrabold tracking-tight text-ink lg:text-4xl">Proven, certified, trusted</h2>
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map((s, i) => (
+            <div class="reveal svc-card tech-card spotlight glass-strong group relative flex flex-col rounded-3xl p-7" data-tilt="6" style={`--i:${i}`}>
+              <span class="icon-tile inline-flex h-12 w-12 items-center justify-center rounded-xl text-[#0aa2c4]">
+                <Icon name={s.icon} class="h-6 w-6" />
+              </span>
+              <p class="mt-6 font-display text-5xl font-extrabold leading-none tracking-tight lg:text-6xl">
+                <span class="bg-gradient-to-br from-[#2c46ad] to-[#0aa2c4] bg-clip-text text-transparent">
+                  {s.num !== undefined ? (
+                    <span class="count-up" data-count={s.num} data-suffix={s.suffix}>0{s.suffix}</span>
+                  ) : (
+                    s.text
+                  )}
+                </span>
+              </p>
+              <div class="mt-4 h-1 w-10 rounded-full bg-gradient-to-r from-brand-yellow to-brand-yellow-600"></div>
+              <p class="mt-3 text-sm font-medium text-ink-600">{s.l}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY: cinematic bento over the work-tools backdrop -->
+    <section id="gallery" class="bg-fixed-work relative overflow-hidden">
+      <div class="relative z-10 mx-auto max-w-7xl px-6 py-24 lg:px-8 lg:py-32">
+        <div class="reveal flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-2xl">
+            <p class="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-brand-blue-600">
+              <span class="draw-line h-px bg-brand-blue/40"></span>
+              Our work
+            </p>
+            <h2 class="mt-5 font-display text-4xl font-extrabold leading-tight tracking-tight text-ink lg:text-5xl">
+              <span class="wm"><span>Recent</span></span>{" "}
+              <span class="wm"><span style="--wd:0.14s">transformations</span></span>
+            </h2>
+            <p class="mt-4 max-w-lg text-lg text-ink-600">A glimpse of the spaces we've painted, renovated and brought back to a spotless shine.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="/gallery" class="btn-primary magnetic inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 font-bold">
+              View full gallery
+              <Icon name="tabler:arrow-right" class="h-5 w-5" />
+            </a>
+            <a href={site.facebook} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-2xl border border-line bg-white px-5 py-3.5 font-semibold text-ink transition-colors hover:border-brand-blue/40">
+              <Icon name="tabler:brand-facebook" class="h-5 w-5 text-brand-blue" />
+              Facebook
+            </a>
+          </div>
+        </div>
+
+        <!-- cinematic bento grid -->
+        <div class="mt-12 grid auto-rows-[11rem] grid-cols-2 gap-4 sm:gap-5 lg:mt-14 lg:auto-rows-[13.5rem] lg:grid-cols-4">
+          {galleryTiles.map((t, i) => (
+            <a
+              href="/gallery"
+              class:list={["g-tile g-in reveal group relative rounded-3xl shadow-[0_28px_56px_-32px_rgba(20,26,43,0.45)] ring-1 ring-white/60", t.span]}
+              style={`--i:${i}`}
+            >
+              <div class="g-media">
+                <div class="g-drift">
+                  <Image
+                    src={img(t.key)}
+                    alt={t.label}
+                    widths={[420, 720, 1000]}
+                    sizes="(max-width:1024px) 50vw, 40vw"
+                    class="g-img"
+                    style={t.pos ? `object-position:${t.pos}` : undefined}
+                  />
+                </div>
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent transition-colors duration-500 group-hover:from-ink/80"></div>
+                <span class="g-shine" aria-hidden="true"></span>
+              </div>
+              <span class="absolute left-4 top-4 flex items-center gap-1.5">
+                <span class="rounded-full bg-white/85 px-2.5 py-1 font-display text-[11px] font-extrabold tracking-widest text-ink backdrop-blur-sm">{String(i + 1).padStart(2, "0")}</span>
+                <span class:list={["rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] backdrop-blur-sm", t.cat === "Painting" ? "bg-brand-yellow/90 text-ink" : t.cat === "Renovation" ? "bg-white/85 text-brand-blue-600" : "bg-brand-blue/85 text-white"]}>{t.cat}</span>
+              </span>
+              <span class="absolute right-4 top-4 flex h-9 w-9 -rotate-45 scale-75 items-center justify-center rounded-full bg-white/85 text-ink opacity-0 backdrop-blur-sm transition-all duration-500 group-hover:rotate-0 group-hover:scale-100 group-hover:opacity-100">
+                <Icon name="tabler:arrow-up-right" class="h-4 w-4" />
+              </span>
+              <span class="absolute inset-x-5 bottom-5 flex items-center gap-2.5 text-white transition-transform duration-500 group-hover:-translate-y-1">
+                <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm"><Icon name="tabler:sparkles" class="h-3.5 w-3.5 text-[#00d4ff]" /></span>
+                <span class="font-semibold tracking-tight drop-shadow-sm">{t.label}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+
+    <!-- TESTIMONIALS: premium marquee wall on a soft sky wash -->
+    <section class="relative overflow-hidden bg-[linear-gradient(180deg,#e7edfb_0%,#f1f4fc_42%,#f6f8fc_100%)] py-24 lg:py-32">
+      <span class="pointer-events-none absolute -left-40 top-16 h-[28rem] w-[28rem] rounded-full" style="background:radial-gradient(circle,rgba(61,93,212,0.1),transparent 70%);" aria-hidden="true"></span>
+      <span class="pointer-events-none absolute -right-40 top-40 h-[28rem] w-[28rem] rounded-full" style="background:radial-gradient(circle,rgba(252,190,19,0.1),transparent 70%);" aria-hidden="true"></span>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+        <!-- header -->
+        <div class="reveal relative mx-auto max-w-2xl text-center">
+          <span class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[62%] select-none font-display text-[11rem] font-extrabold leading-none text-brand-blue/[0.055] lg:text-[15rem]" aria-hidden="true">&ldquo;&rdquo;</span>
+          <div class="relative">
+            <p class="flex items-center justify-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-brand-blue-600">
+              <span class="h-px w-8 bg-brand-blue/30"></span>
+              What clients say
+              <span class="h-px w-8 bg-brand-blue/30"></span>
+            </p>
+            <h2 class="mt-5 font-display text-4xl font-extrabold leading-tight tracking-tight text-ink lg:text-[3.4rem]">
+              Loved by <span class="bg-gradient-to-r from-[#2c46ad] to-[#0aa2c4] bg-clip-text text-transparent">3000+</span> customers
+            </h2>
+            <p class="mx-auto mt-4 max-w-md text-lg text-ink-600">Real words from homeowners, offices and developers across Penang, Butterworth & Kulim.</p>
+            <div class="mt-7 inline-flex items-center gap-3 rounded-full border border-white/70 bg-white/80 py-2 pl-2.5 pr-5 shadow-[0_14px_34px_-20px_rgba(20,26,43,0.35)] backdrop-blur-sm">
+              <span class="flex -space-x-2.5">
+                {testimonials.slice(0, 4).map((t, i) => (
+                  <span class:list={["flex h-8 w-8 items-center justify-center rounded-full font-display text-xs font-bold ring-2 ring-white", avatarTints[i % avatarTints.length]]}>{t.name.charAt(0)}</span>
+                ))}
+              </span>
+              <span class="flex gap-0.5">{[0, 1, 2, 3, 4].map(() => (<Icon name="tabler:star-filled" class="h-4 w-4 text-brand-yellow" />))}</span>
+              <span class="text-sm font-bold text-ink">5.0</span>
+              <span class="hidden text-sm text-ink-600 sm:inline">· {testimonials.length} verified reviews</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- marquee wall: two rows drifting in opposite directions, white + navy cards -->
+        <div class="reveal mt-14 flex flex-col gap-4 lg:mt-16">
+          {[
+            { cards: reviewRowA, rev: false, dur: "58s" },
+            { cards: reviewRowB, rev: true, dur: "72s" },
+          ].map((row) => (
+            <div class:list={["marquee marquee-mask", row.rev && "marquee-rev"]}>
+              <div class="marquee-track pt-3 pb-9" style={`--dur:${row.dur}`}>
+                {[...row.cards, ...row.cards].map((t, i) => {
+                  const k = i % row.cards.length;
+                  const navy = (k + (row.rev ? 2 : 0)) % 3 === 1;
+                  const tint = avatarTints[k % avatarTints.length];
+                  return (
+                    <figure
+                      class:list={[
+                        "relative mr-5 flex h-[16.5rem] w-[22rem] shrink-0 flex-col rounded-[1.75rem] border p-7 transition-all duration-300 hover:-translate-y-1.5",
+                        navy
+                          ? "border-white/10 bg-[#0b1226] shadow-[0_26px_54px_-30px_rgba(11,18,38,0.65)] hover:shadow-[0_34px_64px_-30px_rgba(11,18,38,0.75)]"
+                          : "border-line bg-white shadow-[0_18px_44px_-30px_rgba(20,26,43,0.28)] hover:shadow-[0_30px_58px_-30px_rgba(20,26,43,0.38)]",
+                      ]}
+                    >
+                      <span class:list={["pointer-events-none absolute right-6 top-3 select-none font-display text-6xl font-extrabold leading-none", navy ? "text-white/[0.08]" : "text-brand-blue/10"]} aria-hidden="true">&rdquo;</span>
+                      <span class="flex gap-0.5" aria-label="Five out of five stars">
+                        {[0, 1, 2, 3, 4].map(() => (<Icon name="tabler:star-filled" class="h-4 w-4 text-brand-yellow" />))}
+                      </span>
+                      <blockquote class:list={["mt-4 line-clamp-4 text-[0.95rem] leading-relaxed", navy ? "text-white/85" : "text-ink/90"]}>{t.quote}</blockquote>
+                      <figcaption class:list={["mt-auto flex items-center gap-3 border-t pt-4", navy ? "border-white/10" : "border-line"]}>
+                        <span class:list={["flex h-9 w-9 items-center justify-center rounded-full font-display text-sm font-bold ring-1 ring-inset", navy ? "bg-white/10 text-white ring-white/25" : `${tint} ring-ink/10`]}>{t.name.charAt(0)}</span>
+                        <span class="min-w-0">
+                          <span class:list={["flex items-center gap-1.5 text-sm font-semibold", navy ? "text-white" : "text-ink"]}>
+                            <span class="truncate">{t.name}</span>
+                            <Icon name="tabler:rosette-discount-check" class:list={["h-4 w-4 shrink-0", navy ? "text-[#00d4ff]" : "text-brand-blue/70"]} />
+                          </span>
+                          {t.role && <span class:list={["block text-xs", navy ? "text-white/50" : "text-ink-600"]}>{t.role}</span>}
+                        </span>
+                      </figcaption>
+                    </figure>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="reveal mt-10 text-center lg:mt-12">
+          <a href="/reviews" class="group inline-flex items-center gap-2.5 rounded-full border border-line bg-white/90 px-8 py-4 text-sm font-bold text-ink shadow-[0_16px_36px_-22px_rgba(20,26,43,0.35)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-blue/40 hover:shadow-[0_22px_44px_-20px_rgba(61,93,212,0.4)]">
+            Read all {testimonials.length} reviews
+            <Icon name="tabler:arrow-right" class="h-4 w-4 text-brand-blue transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUOTE / CONTACT: high-tech lead band -->
+    <section id="quote" class="relative overflow-hidden bg-[#0a0f1f] py-24 text-white lg:py-32">
+      <div class="dot-grid absolute inset-0 opacity-50" aria-hidden="true"></div>
+      <span class="absolute -left-24 top-10 h-80 w-80 rounded-full" style="background:radial-gradient(circle,rgba(0,212,255,0.18),transparent 70%);" aria-hidden="true"></span>
+      <span class="absolute -right-24 bottom-0 h-96 w-96 rounded-full" style="background:radial-gradient(circle,rgba(61,93,212,0.26),transparent 70%);" aria-hidden="true"></span>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
+          <!-- left: copy + contact tiles -->
+          <div>
+            <p class="reveal r-delay inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-[#00d4ff]" style="--i:0">
+              <span class="relative flex h-2 w-2">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#00d4ff] opacity-70"></span>
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-[#00d4ff]"></span>
+              </span>
+              Get in touch
+            </p>
+            <h2 class="reveal r-delay mt-5 font-display text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl" style="--i:1">Let&rsquo;s talk about your project</h2>
+            <p class="reveal r-delay mt-5 max-w-md text-lg leading-relaxed text-white/65" style="--i:2">Tell us what you need and we&rsquo;ll get back to you quickly — no obligation, anywhere in Penang, Butterworth & Kulim.</p>
+
+            <div class="mt-10 grid gap-3 sm:grid-cols-2">
+              {site.phones.map((p, i) => (
+                <a href={waLink(p.tel.replace("+", ""), site.whatsapp.prefill)} target="_blank" rel="noopener" class="reveal r-delay group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00d4ff]/40 hover:bg-white/[0.08]" style={`--i:${3 + i}`}>
+                  <span class="icon-tile inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[#25D366]"><Icon name="tabler:brand-whatsapp" class="h-5 w-5" /></span>
+                  <span class="min-w-0">
+                    <span class="block text-[11px] font-semibold uppercase tracking-wider text-white/50">WhatsApp · {p.name}</span>
+                    <span class="block truncate font-semibold text-white">{p.display}</span>
+                  </span>
+                </a>
+              ))}
+              <a href={`mailto:${site.email}`} class="reveal r-delay group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00d4ff]/40 hover:bg-white/[0.08]" style="--i:5">
+                <span class="icon-tile inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[#00d4ff]"><Icon name="tabler:mail" class="h-5 w-5" /></span>
+                <span class="min-w-0">
+                  <span class="block text-[11px] font-semibold uppercase tracking-wider text-white/50">Email</span>
+                  <span class="block truncate font-semibold text-white">{site.email}</span>
+                </span>
+              </a>
+              <div class="reveal r-delay group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm" style="--i:6">
+                <span class="icon-tile inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[#00d4ff]"><Icon name="tabler:map-pin" class="h-5 w-5" /></span>
+                <span class="min-w-0">
+                  <span class="block text-[11px] font-semibold uppercase tracking-wider text-white/50">Visit</span>
+                  <span class="block truncate font-semibold text-white">Gelugor, Pulau Pinang</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="reveal r-delay mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-white/55" style="--i:7">
+              <span class="inline-flex items-center gap-2"><Icon name="tabler:rosette-discount-check" class="h-4 w-4 text-brand-yellow" /> CIDB certified</span>
+              <span class="inline-flex items-center gap-2"><Icon name="tabler:shield-check" class="h-4 w-4 text-brand-yellow" /> Fully insured</span>
+              <span class="inline-flex items-center gap-2"><Icon name="tabler:leaf" class="h-4 w-4 text-brand-yellow" /> Eco-friendly</span>
+            </div>
+          </div>
+
+          <!-- right: frosted form panel -->
+          <div class="reveal r-right">
+            <div class="tech-card glass-strong rounded-[2rem] p-7 shadow-2xl sm:p-9">
+              <h3 class="font-display text-2xl font-extrabold tracking-tight text-ink">Request a free quote</h3>
+              <p class="mt-2 text-ink-600">A few quick details and we&rsquo;ll reply fast.</p>
+              <div class="mt-6">
+                <QuoteForm />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <WhatsAppButton />
+
+  <script>
+    // Paint-trail effect: soft brand-colour brush strokes follow the cursor
+    // across the hero and fade like drying paint. Hover devices only,
+    // reduced-motion safe, and capped so it can never hurt performance.
+    const heroEl = document.querySelector<HTMLElement>(".hero");
+    const paint = document.getElementById("paint-canvas") as HTMLCanvasElement | null;
+    if (
+      heroEl && paint &&
+      matchMedia("(hover: hover)").matches &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      const ctx = paint.getContext("2d")!;
+      const colors = ["61,93,212", "252,190,19", "10,162,196"]; // brand blue, gold, cyan
+      const LIFE = 1900; // ms a stroke stays wet
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      let stamps: { x: number; y: number; r: number; c: string; a: number; born: number }[] = [];
+      let raf = 0, lastPt: { x: number; y: number } | null = null, ci = 0, run = 0;
+
+      const resize = () => { paint.width = heroEl.clientWidth * dpr; paint.height = heroEl.clientHeight * dpr; };
+      resize();
+      addEventListener("resize", resize);
+
+      const loop = () => {
+        ctx.clearRect(0, 0, paint.width, paint.height);
+        const now = performance.now();
+        stamps = stamps.filter((s) => now - s.born < LIFE);
+        for (const s of stamps) {
+          const life = 1 - (now - s.born) / LIFE;
+          const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+          g.addColorStop(0, `rgba(${s.c},${s.a * life})`);
+          g.addColorStop(1, `rgba(${s.c},0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, 6.2832);
+          ctx.fill();
+        }
+        raf = stamps.length ? requestAnimationFrame(loop) : 0;
+      };
+
+      heroEl.addEventListener("pointermove", (e) => {
+        const rect = heroEl.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * dpr;
+        const y = (e.clientY - rect.top) * dpr;
+        if (lastPt) {
+          const dx = x - lastPt.x, dy = y - lastPt.y;
+          const d = Math.hypot(dx, dy);
+          const steps = Math.max(1, Math.floor(d / (16 * dpr)));
+          for (let i = 1; i <= steps; i++) {
+            run += d / steps;
+            if (run > 140 * dpr) { ci = (ci + 1) % colors.length; run = 0; } // brush dips into the next colour
+            stamps.push({
+              x: lastPt.x + (dx * i) / steps,
+              y: lastPt.y + (dy * i) / steps,
+              r: (30 + Math.random() * 26) * dpr,
+              c: colors[ci],
+              a: 0.13,
+              born: performance.now(),
+            });
+          }
+          if (stamps.length > 360) stamps.splice(0, stamps.length - 360);
+        }
+        lastPt = { x, y };
+        if (!raf) raf = requestAnimationFrame(loop);
+      });
+      heroEl.addEventListener("pointerleave", () => { lastPt = null; });
+    }
+  </script>
+
+  <script>
+    // Animated stat counters, triggered once on scroll into view.
+    const counters = document.querySelectorAll<HTMLElement>(".count-up");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const run = (el: HTMLElement) => {
+      const target = Number(el.dataset.count || 0);
+      const suffix = el.dataset.suffix || "";
+      if (reduce) { el.textContent = target + suffix; return; }
+      const dur = 1400;
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const p = Math.min(1, (now - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    if (counters.length) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) { run(e.target as HTMLElement); io.unobserve(e.target); }
+          }
+        },
+        { threshold: 0.5 }
+      );
+      counters.forEach((c) => io.observe(c));
+    }
+  </script>
+</Base>

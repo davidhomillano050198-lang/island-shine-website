@@ -1,0 +1,151 @@
+---
+import Page from "../../components/Page.astro";
+import PageHero from "../../components/PageHero.astro";
+import CTABand from "../../components/CTABand.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { serviceCatalog } from "../../data/services";
+import { img } from "../../lib/img";
+import { site } from "../../data/site";
+
+export function getStaticPaths() {
+  return serviceCatalog.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+
+const { service } = Astro.props;
+const heroImg = img(service.image);
+const galleryImgs = service.gallery.map((k) => ({ key: k, src: img(k) }));
+const related = serviceCatalog.filter((s) => s.slug !== service.slug).slice(0, 3);
+const accent =
+  service.accent === "yellow" ? "#e0a400" : service.accent === "cyan" ? "#0aa2c4" : "#2c46ad";
+---
+
+<Page title={`${service.title} | ${site.shortName}`} description={service.short}>
+  <PageHero
+    eyebrow="Our services"
+    title={service.title}
+    subtitle={service.tagline}
+    image={heroImg}
+    crumb={service.title}
+  >
+    <div class="reveal mt-9 flex flex-wrap items-center gap-4">
+      <a href="/contact" class="btn-primary magnetic inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-bold">
+        Get a free quote
+        <Icon name="tabler:arrow-right" class="h-5 w-5" />
+      </a>
+      <a href="/services" class="btn-glass inline-flex items-center gap-2 rounded-2xl px-6 py-3.5 font-semibold text-ink">
+        <Icon name="tabler:layout-grid" class="h-5 w-5 text-brand-blue" />
+        All services
+      </a>
+    </div>
+  </PageHero>
+
+  <!-- INTRO + FEATURES -->
+  <section class="relative overflow-hidden bg-paper py-20 lg:py-28">
+    <div class="relative z-10 mx-auto grid max-w-7xl gap-12 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16">
+      <div class="reveal lg:col-span-7">
+        <span
+          class="icon-tile inline-flex h-16 w-16 items-center justify-center rounded-2xl"
+          style={`color:${accent}`}
+        >
+          <Icon name={service.icon} class="h-8 w-8" />
+        </span>
+        <h2 class="mt-6 font-display text-3xl font-extrabold tracking-tight text-ink lg:text-4xl">
+          What we deliver
+        </h2>
+        <p class="mt-5 text-lg leading-relaxed text-ink-600">{service.intro}</p>
+
+        <h3 class="mt-10 text-sm font-semibold uppercase tracking-[0.18em] text-ink-600">Included</h3>
+        <ul class="mt-5 grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
+          {service.features.map((f) => (
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={`background:${accent}1a;color:${accent}`}>
+                <Icon name="tabler:check" class="h-4 w-4" />
+              </span>
+              <span class="text-ink">{f}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <aside class="reveal lg:col-span-5">
+        <div class="tech-card glass-strong relative overflow-hidden rounded-3xl p-2.5 shadow-xl">
+          <Image
+            src={heroImg}
+            alt={service.title}
+            widths={[420, 720]}
+            sizes="(max-width:1024px) 90vw, 440px"
+            class="h-56 w-full rounded-2xl object-cover sm:h-64"
+          />
+          <div class="p-5">
+            <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-ink-600">Ideal for</h3>
+            <ul class="mt-4 flex flex-wrap gap-2.5">
+              {service.idealFor.map((i) => (
+                <li class="chip-tech inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium text-ink-600">
+                  <Icon name="tabler:point-filled" class="h-4 w-4" style={`color:${accent}`} />
+                  {i}
+                </li>
+              ))}
+            </ul>
+            <a href="/contact" class="group mt-6 inline-flex items-center gap-3 font-semibold" style={`color:${accent}`}>
+              Request this service
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-1" style={`background:${accent}1a`}>
+                <Icon name="tabler:arrow-right" class="h-4 w-4" />
+              </span>
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- GALLERY STRIP -->
+  <section class="relative overflow-hidden bg-sand py-20 lg:py-24">
+    <div class="mx-auto max-w-7xl px-6 sm:px-8">
+      <div class="reveal flex items-end justify-between gap-4">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-ink lg:text-3xl">Recent work</h2>
+        <a href="/gallery" class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue-600 hover:underline">
+          View gallery <Icon name="tabler:arrow-right" class="h-4 w-4" />
+        </a>
+      </div>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {galleryImgs.map((g) => (
+          <div class="reveal group overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-line">
+            <Image
+              src={g.src}
+              alt={`${service.title} project`}
+              widths={[400, 720]}
+              sizes="(max-width:640px) 90vw, 360px"
+              class="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- RELATED -->
+  <section class="relative overflow-hidden bg-paper py-20 lg:py-24">
+    <div class="svc-grid absolute inset-0" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+      <h2 class="reveal font-display text-2xl font-extrabold tracking-tight text-ink lg:text-3xl">Explore more services</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {related.map((r) => (
+          <a href={`/services/${r.slug}`} class="svc-card tech-card spotlight glass-strong group relative flex flex-col rounded-3xl p-7">
+            <span class="icon-tile inline-flex h-12 w-12 items-center justify-center rounded-xl text-[#0aa2c4]">
+              <Icon name={r.icon} class="h-6 w-6" />
+            </span>
+            <h3 class="mt-5 font-display text-lg font-bold text-ink">{r.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-600">{r.short}</p>
+            <span class="mt-auto flex items-center gap-2 pt-6 text-sm font-semibold text-brand-blue-600">
+              Learn more
+              <Icon name="tabler:arrow-right" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand title={`Ready to start your ${service.title.toLowerCase()} project?`} />
+</Page>

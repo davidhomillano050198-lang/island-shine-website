@@ -1,0 +1,95 @@
+---
+import Page from "../../components/Page.astro";
+import PageHero from "../../components/PageHero.astro";
+import CTABand from "../../components/CTABand.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { serviceCatalog } from "../../data/services";
+import { img } from "../../lib/img";
+import { site } from "../../data/site";
+
+const heroImg = img("ph-services");
+const cards = serviceCatalog.map((s) => ({ ...s, src: img(s.image) }));
+---
+
+<Page
+  title={`Our Services | ${site.shortName}`}
+  description="Painting, renovation and a full cleaning catalogue — contract, post-renovation, factory, high-rise, carpet and landscaping — across Penang, Butterworth & Kulim."
+>
+  <PageHero
+    eyebrow="What we do"
+    title="One team for painting, renovation & cleaning"
+    subtitle="Trusted, tailored solutions that deliver pristine, hygienic and beautifully finished spaces for commercial, residential and facility properties — with trained professionals, top-notch tools and eco-friendly products."
+    image={heroImg}
+    crumb="Services"
+  >
+    <div class="reveal mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm font-semibold text-ink-600">
+      <span class="inline-flex items-center gap-2"><Icon name="tabler:rosette-discount-check" class="h-5 w-5 text-brand-blue" /> CIDB certified</span>
+      <span class="inline-flex items-center gap-2"><Icon name="tabler:shield-check" class="h-5 w-5 text-brand-blue" /> Fully insured</span>
+      <span class="inline-flex items-center gap-2"><Icon name="tabler:leaf" class="h-5 w-5 text-brand-blue" /> Eco-friendly</span>
+    </div>
+  </PageHero>
+
+  <!-- SERVICE GRID -->
+  <section class="relative overflow-hidden bg-paper py-20 lg:py-28">
+    <div class="svc-bg" aria-hidden="true">
+      <span class="blob blob-yellow"></span>
+      <span class="blob blob-blue"></span>
+    </div>
+    <div class="relative z-10 mx-auto max-w-7xl px-6 sm:px-8">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {cards.map((s, i) => (
+          <a
+            href={`/services/${s.slug}`}
+            class="svc-card tech-card spotlight glass-strong group relative flex flex-col overflow-hidden rounded-3xl"
+            data-tilt="4"
+          >
+            <div class="relative overflow-hidden">
+              <Image
+                src={s.src}
+                alt={s.title}
+                widths={[420, 720]}
+                sizes="(max-width:768px) 90vw, 380px"
+                class="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <span class="absolute left-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/85 text-[#0aa2c4] shadow-md backdrop-blur-sm">
+                <Icon name={s.icon} class="h-6 w-6" />
+              </span>
+              <span class="absolute right-4 top-4 font-display text-3xl font-extrabold leading-none text-white/85 drop-shadow">0{i + 1}</span>
+            </div>
+            <div class="flex flex-1 flex-col p-6">
+              <h2 class="font-display text-lg font-bold text-ink">{s.title}</h2>
+              <p class="mt-2 text-sm leading-relaxed text-ink-600">{s.short}</p>
+              <span class="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-brand-blue-600">
+                Learn more
+                <Icon name="tabler:arrow-right" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE AREA BANNER -->
+  <section class="relative overflow-hidden bg-[#0a0f1f] py-16 text-white lg:py-20">
+    <div class="dot-grid absolute inset-0 opacity-50" aria-hidden="true"></div>
+    <span class="absolute -right-10 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full" style="background:radial-gradient(circle,rgba(0,212,255,0.3),transparent 70%);" aria-hidden="true"></span>
+    <div class="relative z-10 mx-auto flex max-w-7xl flex-col items-start gap-6 px-6 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
+      <div class="reveal">
+        <p class="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-[#00d4ff]">
+          <Icon name="tabler:map-pin" class="h-4 w-4" /> Service area
+        </p>
+        <h2 class="mt-4 max-w-2xl font-display text-3xl font-extrabold leading-tight sm:text-4xl">
+          We provide a one-stop service that covers Penang, Butterworth & Kulim.
+        </h2>
+      </div>
+      <a href="/contact" class="btn-primary magnetic inline-flex shrink-0 items-center gap-2 rounded-2xl px-7 py-4 font-bold">
+        Check your area
+        <Icon name="tabler:arrow-right" class="h-5 w-5" />
+      </a>
+    </div>
+  </section>
+
+  <CTABand />
+</Page>

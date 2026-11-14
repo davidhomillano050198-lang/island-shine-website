@@ -1,0 +1,92 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import hero from "../assets/images/hero-highrise.png";
+import painting from "../assets/images/service-painting.png";
+import renovation from "../assets/images/service-renovation.png";
+import postreno from "../assets/images/service-postreno.png";
+
+const slides = [
+  { img: hero, alt: "High-rise facade cleaning project", label: "High-rise cleaning", icon: "tabler:building" },
+  { img: painting, alt: "Freshly painted terrace homes", label: "Building painting", icon: "tabler:paint" },
+  { img: renovation, alt: "Interior renovation in progress", label: "Renovation", icon: "tabler:tools" },
+  { img: postreno, alt: "Post-renovation deep cleaning", label: "Post-reno cleaning", icon: "tabler:sparkles" },
+];
+// Clone the first slide at the end for a seamless infinite loop.
+const track = [...slides, slides[0]];
+---
+
+<div
+  id="hero-carousel"
+  class="relative h-80 select-none overflow-hidden sm:h-96 lg:h-[32rem]"
+>
+  <div class="hc-track flex h-full w-full will-change-transform">
+    {track.map((s, i) => (
+      <div class="hc-slide relative h-full w-full shrink-0">
+        <Image
+          src={s.img}
+          alt={s.alt}
+          widths={[480, 768, 1123]}
+          sizes="(max-width: 1024px) 92vw, 460px"
+          class="h-full w-full object-cover"
+          loading={i === 0 ? "eager" : "lazy"}
+        />
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+        <span class="absolute bottom-5 left-5 inline-flex items-center gap-2 rounded-full bg-white/95 px-3.5 py-2 text-sm font-semibold text-brand-blue shadow-lg backdrop-blur">
+          <Icon name={s.icon} class="h-4 w-4 text-brand-yellow-600" />
+          {s.label}
+        </span>
+      </div>
+    ))}
+  </div>
+
+  <div class="absolute bottom-5 right-5 flex gap-2">
+    {slides.map((_, i) => (
+      <button class="hc-dot h-2 w-2 rounded-full bg-white/50 transition-all duration-300" data-idx={i} aria-label={`Show slide ${i + 1}`}></button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .hc-dot.is-on {
+    width: 1.6rem;
+    background: var(--color-brand-yellow);
+  }
+</style>
+
+<script>
+  const root = document.getElementById("hero-carousel");
+  if (root) {
+    const trackEl = root.querySelector<HTMLElement>(".hc-track")!;
+    const dots = Array.from(root.querySelectorAll<HTMLElement>(".hc-dot"));
+    const real = dots.length;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ease = "transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)";
+    let idx = 0;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    const place = (i: number, animate: boolean) => {
+      trackEl.style.transition = animate && !reduce ? ease : "none";
+      trackEl.style.transform = `translateX(-${i * 100}%)`;
+    };
+    const syncDots = () => {
+      const r = ((idx % real) + real) % real;
+      dots.forEach((d, k) => d.classList.toggle("is-on", k === r));
+    };
+    const go = (i: number) => { idx = i; place(idx, true); syncDots(); };
+
+    trackEl.addEventListener("transitionend", () => {
+      if (idx >= real) { idx = 0; place(0, false); }
+    });
+
+    const start = () => { if (!reduce && real > 1) timer = setInterval(() => go(idx + 1), 4500); };
+    const stop = () => { if (timer) clearInterval(timer); };
+
+    place(0, false);
+    syncDots();
+    dots.forEach((d) => d.addEventListener("click", () => { stop(); go(Number(d.dataset.idx)); start(); }));
+    root.addEventListener("pointerenter", stop);
+    root.addEventListener("pointerleave", start);
+    start();
+  }
+</script>

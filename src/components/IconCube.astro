@@ -1,0 +1,14 @@
+---
+import { Icon } from "astro-icon/components";
+const { icon } = Astro.props as { icon: string };
+---
+<div class="cube3d-wrap" aria-hidden="true">
+  <div class="cube3d">
+    <span class="face front"><Icon name={icon} /></span>
+    <span class="face back"><Icon name={icon} /></span>
+    <span class="face right"></span>
+    <span class="face left"></span>
+    <span class="face top"></span>
+    <span class="face bottom"></span>
+  </div>
+</div>
